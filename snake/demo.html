@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #body{position:absolute;margin:auto;top:0;left:0;bottom:0;right:0;width:600px;height:600px;}
+        #show{position:relative;margin:auto;font-size:25px;text-align: center;}
+        #button{margin:auto;text-align: center;}
+        #button input{margin:5px;}
+    </style>
+</head>
+<body>
+<div id="body">
+    <div id="show">欢迎来到贪食蛇！请用键盘方向键操作。</div>
+    <canvas id="wrap"></canvas>
+    <div id="button">
+        <input onclick="Start();" type="button" value="开始"/>
+        <input onclick="Clear()" type="button" value="清空" />
+        <br />
+        <input onclick="Difficulty('easy')" type="button"  value="简单" />
+        <input onclick="Difficulty('normal')" type="button" value="普通" />
+        <input onclick="Difficulty('difficulty')" type="button"  value="困难" />
+        <h3>已得分数:<span id="score">0</span></h3>
+    </div>
+</div>
+
+
+
+<script>
+    //------------------------------------------------------------------------------------变量创建
+    var canvas = document.getElementById("wrap");
+    var ctx = canvas.getContext("2d");
+    canvas.width = 600;
+    canvas.height = 400;
+    canvas.style.border ="1px solid #000";
+    var score;
+    var show = document.getElementById("show");
+    var snake ={
+        x:0,
+        y:0,
+        direction:0,
+        life:true
+    };
+    var apple ={
+        x:0,
+        y:0
+    };
+    var body =[];
+    var difficulty= 100;
+
+    //------------------------------------------------------------------------------------初始化
+    function Initialize(){
+        score = 0;
+        snake.x=canvas.width/2;
+        snake.y=canvas.height/2;
+        snake.direction = 39;                                   //默认向右行动
+        snake.life =true;
+        ctx.fillStyle="#fff";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        body.splice(0,body.length);                            //清空身体
+        for(var i=0;i<3;i++){                                   //创建初始身体
+            var n={};
+            if(i ==0){
+                n.x = snake.x - 10;
+                n.y = snake.y;
+                n.direction =snake.direction;
+            }else{
+                n.x = body[i-1].x -10;
+                n.y = body[i-1].y;
+                n.direction = body[i-1].direction;
+            }
+
+            body.push(n);
+        }
+
+        NewApple();                                               //创建苹果
+
+        ctx.fillStyle="#000";
+        ctx.fillRect(snake.x-5,snake.y-5,10,10);
+
+        ctx.fillStyle ="#0000ff";
+        ctx.fillRect(apple.x-5,apple.y-5,10,10);
+    }
+
+    //------------------------------------------------------------------------------------循环动作
+    function Update(){
+        switch (snake.direction){                               //蛇头根据方向行进
+            case 37:
+                snake.x -=10;
+                break;
+            case 38:
+                snake.y -=10;
+                break;
+            case 39:
+                snake.x +=10;
+                break;
+            case 40:
+                snake.y +=10;
+        }
+
+        if(snake.x>canvas.width || snake.y>canvas.height || snake.x<0 || snake.y<0){
+            snake.life =false;                                   //触壁死亡
+        }
+
+        for(var i=body.length-1; i>=0;i--){                     //身体行动
+            switch (body[i].direction){
+                case 37:
+                    body[i].x -=10;
+                    break;
+                case 38:
+                    body[i].y -=10;
+                    break;
+                case 39:
+                    body[i].x +=10;
+                    break;
+                case 40:
+                    body[i].y +=10;
+            }
+            if(i == 0){
+                body[i].direction = snake.direction;
+            }else{
+                body[i].direction = body[i-1].direction;
+            }
+            if(Math.abs(snake.x-body[i].x)<5 && Math.abs(snake.y-body[i].y)<5){
+                snake.life=false;                               //自我死亡
+            }
+        }
+        if(!snake.life){                                        //判断是否死亡
+            clearInterval(loop);
+            alert("Dead!");
+            show.innerHTML="您获得了"+score+"分!";
+        }
+
+        if(Math.abs(snake.x-apple.x)<10 && Math.abs(snake.y-apple.y)<10){      //吃到苹果
+            NewApple();                                           //创建新苹果
+            var last_body =body[body.length-1];
+            var tail={};
+            switch (last_body.direction){
+                case 37:
+                    tail.x = last_body.x +10;
+                    tail.y = last_body.y;
+                    tail.direction = last_body.direction;
+                    break;
+                case 38:
+                    tail.y = last_body.y +10;
+                    tail.x = last_body.x;
+                    tail.direction = last_body.direction;
+                    break;
+                case 39:
+                    tail.x = last_body.x -10;
+                    tail.y = last_body.y;
+                    tail.direction = last_body.direction;
+                    break;
+                case 40:
+                    tail.y = last_body.y -10;
+                    tail.x = last_body.x;
+                    tail.direction = last_body.direction;
+            }
+            body.push(tail);                                      //增加身体
+            score ++;
+            document.getElementById("score").innerHTML = score;
+        }
+        ctx.fillStyle="#fff";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+
+        ctx.fillStyle="#000";
+        ctx.fillRect(snake.x-5,snake.y-5,10,10);
+
+        for(var j=0;j<body.length;j++){
+            ctx.fillStyle="#000";
+            ctx.fillRect(body[j].x-4,body[j].y-4,8,8);
+        }
+
+        ctx.fillStyle ="#0000ff";
+        ctx.fillRect(apple.x-5,apple.y-5,10,10);
+    }
+
+    //------------------------------------------------------------------------------------创建苹果
+    function NewApple(){
+        apple.x = 5+ Math.random()*(canvas.width-10);
+        apple.y = 5+ Math.random()*(canvas.height-10);
+    }
+
+    //------------------------------------------------------------------------------------开始游戏
+    function Start(){
+        if(snake.x>0 || snake.y>0){return;}
+        Initialize();
+        show.innerHTML="祝您好运！";
+        addEventListener("keydown",function(e){                       //监听前行方向
+            var key = e.keyCode;
+            if( key>=37 &&key<=40){
+                if(Math.abs(snake.direction - key) != 2){
+                    snake.direction = key;
+                }
+            }
+        });
+
+        loop =setInterval(Update,difficulty);
+    }
+
+    //------------------------------------------------------------------------------------清理战场
+    function Clear(){
+        if(snake.x>0 || snake.y>0){
+            clearInterval(loop);
+            show.innerHTML="欢迎来到贪食蛇！请用键盘方向键操作。";
+            snake.x =0;
+            snake.y =0;
+            ctx.fillStyle="#fff";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            score = 0;
+            document.getElementById("score").innerHTML = score;
+        };
+    }
+
+    //------------------------------------------------------------------------------------难度设定
+    function Difficulty(e){
+        if(snake.x>0 || snake.y>0){
+            alert("请先清空再设定难度！");
+        }else{
+            if(e == "easy"){
+                difficulty = 100;
+                show.innerHTML="难度已设定为简单！"
+            }else if(e == "normal"){
+                difficulty = 50;
+                show.innerHTML="难度已设定为普通！"
+            }else{
+                difficulty = 20;
+                show.innerHTML="难度已设定为困难！"
+            }
+        }
+
+    }
+
+
+
+</script>
+</body>
+</html>
