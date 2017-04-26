@@ -201,6 +201,7 @@
             }
         });
         addEventListener("touchstart",function(e){                     //触屏控制方向
+            e.preventDefault();
             startx =event.touches[0].pageX;
             starty =event.touches[0].pageY;
         });
