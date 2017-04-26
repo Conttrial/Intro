@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
+<head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,minimum-scale=1,maximum-scale=1"/>
     <title></title>
     <style>
-        #body{position:absolute;margin:auto;top:0;left:0;bottom:0;right:0;width:600px;height:600px;}
-        #show{position:relative;margin:auto;font-size:25px;text-align: center;}
+        #body{position:absolute;margin:auto;top:10%;left:0;right:0;width:95%;max-width:800px;height:70%;}
+        #show{position:relative;margin:auto;font-size:20px;text-align: center;}
         #button{margin:auto;text-align: center;}
         #button input{margin:5px;}
     </style>
 </head>
 <body>
 <div id="body">
-    <div id="show">欢迎来到贪食蛇！请用键盘方向键操作。</div>
+    <div id="show">请用键盘或滑动屏幕控制方向。</div>
     <canvas id="wrap"></canvas>
     <div id="button">
         <input onclick="Start();" type="button" value="开始"/>
@@ -31,8 +32,11 @@
     //------------------------------------------------------------------------------------变量创建
     var canvas = document.getElementById("wrap");
     var ctx = canvas.getContext("2d");
-    canvas.width = 600;
-    canvas.height = 400;
+    var startx,starty,endx,endy;
+
+    var wrap =document.getElementById("body");
+    canvas.width = wrap.offsetWidth;
+    canvas.height = wrap.offsetHeight*0.8;
     canvas.style.border ="1px solid #000";
     var score;
     var show = document.getElementById("show");
@@ -187,13 +191,52 @@
         if(snake.x>0 || snake.y>0){return;}
         Initialize();
         show.innerHTML="祝您好运！";
-        addEventListener("keydown",function(e){                       //监听前行方向
+        addEventListener("keydown",function(e){                       //键盘控制方向
+            e.preventDefault();
             var key = e.keyCode;
             if( key>=37 &&key<=40){
                 if(Math.abs(snake.direction - key) != 2){
                     snake.direction = key;
                 }
             }
+        });
+        addEventListener("touchstart",function(e){                     //触屏控制方向
+            startx =event.touches[0].pageX;
+            starty =event.touches[0].pageY;
+        });
+        addEventListener("touchend",function(e){
+            endx =event.changedTouches[0].pageX;
+            endy =event.changedTouches[0].pageY;
+            var deltax = endx-startx;
+            var deltay = endy-starty;
+            var key;
+                if(Math.abs(deltax) > Math.abs(deltay)){
+                    if(deltax>0){
+                        key = 39;
+                        if(Math.abs(snake.direction - key) != 2){
+                            snake.direction = key;
+                        }
+                    }else{
+                        key = 37;
+                        if(Math.abs(snake.direction - key) != 2){
+                            snake.direction = key;
+                        }
+                    }
+                }else{
+                    if(deltay>0){
+                        key = 40;
+                        if(Math.abs(snake.direction - key) != 2){
+                            snake.direction = key;
+                        }
+                    }else{
+                        key =38;
+                        if(Math.abs(snake.direction - key) != 2){
+                            snake.direction = key;
+                        }
+                    }
+                }
+
+
         });
 
         loop =setInterval(Update,difficulty);
@@ -203,7 +246,7 @@
     function Clear(){
         if(snake.x>0 || snake.y>0){
             clearInterval(loop);
-            show.innerHTML="欢迎来到贪食蛇！请用键盘方向键操作。";
+            show.innerHTML="欢迎来到贪食蛇！";
             snake.x =0;
             snake.y =0;
             ctx.fillStyle="#fff";
@@ -231,9 +274,3 @@
         }
 
     }
-
-
-
-</script>
-</body>
-</html>
