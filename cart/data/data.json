@@ -1,0 +1,66 @@
+{
+    "list":[
+      {
+        "src":"img/chicken.jpg",
+        "price":22,
+        "number":0,
+        "name":"BBQ烤全鸡"
+      },
+      {
+        "src":"img/xianglajituibao.jpg",
+        "price":10,
+        "number": 0,
+        "name":"香辣鸡腿堡"
+      },
+      {
+        "src":"img/zhizunqixiabao.jpg",
+        "price":11,
+        "number": 0,
+        "name":"至尊七虾堡"
+      },
+      {
+        "src":"img/quanjikele.jpg",
+        "price":27,
+        "number": 0,
+        "name":"BBQ烤全鸡+可乐"
+      },
+      {
+        "src":"img/laziji.jpg",
+        "price":10,
+        "number": 0,
+        "name":"辣子鸡块"
+      },
+      {
+        "src":"img/xianglajichi.jpg",
+        "price":9,
+        "number": 0,
+        "name":"香辣鸡翅"
+      },
+      {
+        "src":"img/xueyubao.jpg",
+        "price":10,
+        "number": 0,
+        "name":"阿拉斯加鳕鱼堡"
+      },
+      {
+        "src":"img/dajipai.jpg",
+        "price":12,
+        "number": 0,
+        "name":"大鸡排"
+      },
+      {
+        "src":"img/jimihua.jpg",
+        "price":8,
+        "number": 0,
+        "name":"鸡米花"
+      },
+      {
+        "src":"img/shangxiaojikuai.jpg",
+        "price":8,
+        "number": 0,
+        "name":"上校鸡块"
+      }
+
+    ]
+}
+
