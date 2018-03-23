@@ -723,7 +723,7 @@ var remarks_pop =new Vue({
                     weeks = this.select_week.join(",");
                 }
                 $.ajax({
-                    url:"http://192.168.3.164:5011/order/orderremark",
+                    url:"",
                     // type:"POST",
                     beforeSend:function(){
                         $("#wait_img").addClass("active");

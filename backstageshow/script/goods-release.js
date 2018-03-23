@@ -141,7 +141,7 @@ $(function(){
 
     $.ajax({                            //获取增值包商品
         url:"",
-        type:'POST',
+        // type:"POST",
         data:{},
         //dataType:"json",
         success:function(e){
@@ -1073,7 +1073,7 @@ var main_right = new Vue({
         })
         $.ajax({
             url:"",
-            type:'POST',
+            // type:"POST",
             data:{
                 userid:localStorage.userid,
                 token:localStorage.token
@@ -1110,7 +1110,7 @@ var main_right = new Vue({
 function GetClassify(id,type){
     $.ajax({
         url:"",
-        type:'POST',
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,

@@ -526,7 +526,7 @@ $(function(){
 
         $.ajax({                            //获取非计划商品
             url:"",
-            type:'POST',
+            // type:"POST",
             data:{},
             //dataType:"json",
             success:function(e){

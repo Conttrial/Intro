@@ -643,7 +643,7 @@ var main = new Vue({
             }
             $.ajax({
                 url:"",
-                type:'POST',
+                // type:"POST",
                 beforeSend:function(){
                     $("#wait_img").addClass("active");
                 },
@@ -934,7 +934,7 @@ var main = new Vue({
                         $.ajax({
                             ///api/distribution_plan_print_express
                             url: '',
-                            type: 'POST',
+                            // type:"POST",
                             //dataType: "json",
                             data: {
                                 ids: ids.join(",")
@@ -1014,7 +1014,7 @@ var main = new Vue({
                         $.ajax({
                             ///api/distribution_plan_print_express
                             url: '',
-                            type: 'POST',
+                            // type:"POST",
                             //dataType: "json",
                             data: {
                                 ids: ids.join(",")
