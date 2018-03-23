@@ -315,7 +315,7 @@ var body = new Vue({
                 },
                 error:function(e){
                     console.log(e)
-                    alert("网络链接错误!")
+                    // alert("网络链接错误!")
                 }
             })
         },

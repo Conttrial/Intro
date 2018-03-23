@@ -115,7 +115,7 @@ var tokenTT;
 function Token(e){
     if(e.error>0){
         if(!tokenTT){
-            alert(e.message);
+            // alert(e.message);
         }
         if(e.error>=9000){
             localStorage.clear();

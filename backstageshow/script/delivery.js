@@ -875,7 +875,7 @@ var main = new Vue({
                 },
                 error:function(e){
                     console.log(e);
-                    alert("网络连接超时!")
+                    // alert("网络连接超时!")
                 }
             })
         },
