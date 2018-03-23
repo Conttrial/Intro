@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/bug-submit.less"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+    <div id="header-header">
+        <sr ref="ch" :index="7"></sr>
+    </div>
+    <div id="body">
+        <div id="body-nav">
+            <h3>当前位置：</h3>
+            <p>我的</p>
+            <div class="src">
+                <img src="../../image/next.png" alt=""/>
+                <a href="bug-list.html">Bug信息列表</a>
+                <img src="../../image/next.png" alt=""/>
+                <p>Bug信息提交</p>
+            </div>
+        </div>
+        <div id="main">
+            <div id="main-left">
+                <div class="top">
+                    <h3>我的</h3>
+                </div>
+                <li class="active">
+                    <a href="bug-list.html"><p>Bug信息列表</p></a>
+                </li>
+                <li>
+                    <a href=""><p>提出建议和需求</p></a>
+                </li>
+            </div>
+            <div id="main-right">
+                <div class="result">
+                    <div class="success">
+                        <img src="../../image/success.jpg" alt=""/>
+                        <h3>提交成功</h3>
+                        <p>恭喜你，为世界的和平出了一份力</p>
+                        <div><a href="bug-list.html">查看bug列表</a></div>
+                    </div>
+                    <div class="fail">
+                        <img src="../../image/success.jpg" alt=""/>
+                        <h3>提交失败</h3>
+                        <p>哎呀，网络似乎出了点问题</p>
+                        <div>返回</div>
+                    </div>
+                </div>
+                <div class="top">
+                    <img src="../../image/bug1.png" alt=""/>
+                    <div>
+                        <h3>Bug信息收集</h3>
+                        <p>每减少一处Bug，用户体验就会往上提升一个层次</p>
+                    </div>
+                </div>
+                <div class="main">
+                    <div class="title">
+                        <div class="circle">1</div>
+                        <h3>选择平台</h3>
+                    </div>
+                    <div class="from">
+                        <div class="active">
+                            <img class="icon" src="../../image/xiaohei-icon.png" alt=""/>
+                            <p>我家小黑App</p>
+                            <img class="selected" src="../../image/selected2.png" alt=""/>
+                        </div>
+                        <div class="wx">
+                            <img class="icon" src="../../image/wx_logo.png" alt=""/>
+                            <p>微信应用</p>
+                            <img class="selected" src="../../image/selected2.png" alt=""/>
+                        </div>
+                        <div class="backstage">
+                            <img class="icon" src="../../image/back-icon.png" alt=""/>
+                            <p>后台管理中心</p>
+                            <img class="selected" src="../../image/selected2.png" alt=""/>
+                        </div>
+                    </div>
+                    <div class="title">
+                        <div class="circle">2</div>
+                        <h3>选择所属页面&模块</h3>
+                    </div>
+                    <div class="modular">
+                        <div>
+                            <p>{{list1_name}}</p><img src="../../image/next.png" alt=""/>
+                            <div class="menu">
+                                <div v-for="(data,index) in list1" :key="index" :class="{active:list1_index ==index}" @click="Select"><p>{{data.name}}</p></div>
+                                <!--<div><p>订阅界面</p></div>-->
+                                <!--<div><p>购买界面</p></div>-->
+                                <!--<div><p>计划中界面</p></div>-->
+                                <!--<div><p>品牌说界面</p></div>-->
+                                <!--<div><p>"我"界面</p></div>-->
+                            </div>
+                        </div>
+                        <div>
+                            <p>{{list2_name}}</p><img src="../../image/next.png" alt=""/>
+                            <div class="menu">
+                                <div v-for="(data,index) in list2" :key="index" :class="{active:list2_index ==index}" @click="Select"><p>{{data.name}}</p></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p>{{list3_name}}</p><img src="../../image/next.png" alt=""/>
+                            <div class="menu">
+                                <div v-for="(data,index) in list3" :key="index" :class="{active:list3_index ==index}" @click="Select"><p>{{data.name}}</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="title">
+                        <div class="circle">3</div>
+                        <h3>问题描述&上传截图</h3>
+                    </div>
+                    <div class="describe">
+                        <textarea name="" id="description" placeholder="请用一段话来描述你遇到的问题"></textarea>
+                        <div class="addimg">
+                            <input id="file1"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                            <img id="img1" src="" alt=""/>
+                            <div>
+                                <p>重新上传</p>
+                                <img src="../../image/Upload_delete@20px.png" alt=""/>
+                            </div>
+                        </div>
+                        <div class="addimg">
+                            <input id="file2"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                            <img id="img2" src="" alt=""/>
+                            <div>
+                                <p>重新上传</p>
+                                <img src="../../image/Upload_delete@20px.png" alt=""/>
+                            </div>
+                        </div>
+                        <!--<div class="img">-->
+                            <!--<img id="img" src="" alt=""/>-->
+                            <!--<div>-->
+                                <!--<p>重新上传</p>-->
+                                <!--<img src="../../image/close.png" alt=""/>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                    <div class="title">
+                        <div class="circle">4</div>
+                        <h3>bug出现频次</h3>
+                    </div>
+                    <div class="times">
+                        <div class="active">
+                            <div></div>
+                            <p>只出现过一次，再未复现过</p>
+                        </div>
+                        <div>
+                            <div></div>
+                            <p>偶尔出现，未有发现规律</p>
+                        </div>
+                        <div>
+                            <div></div>
+                            <p>一定规律会触发100%发生</p>
+                        </div>
+                        <div>
+                            <div></div>
+                            <p>必定触发</p>
+                        </div>
+                    </div>
+                    <div class="title">
+                        <div class="circle">5</div>
+                        <h3>bug严重级别</h3>
+                    </div>
+                    <div class="level">
+                        <div class="level-select">
+                            <p data-level="1">没有影响，但是降低工作效率</p>
+                            <img src="../../image/next.png" alt=""/>
+                            <div class="menu">
+                                <div class="active"><p>没有影响，但是降低工作效率</p></div>
+                                <div><p>影响正常工作，并且降低工作效率</p></div>
+                                <div><p>无法正常工作，必须解决此bug才能进行正常工作</p></div>
+                                <div><p>无法正常工作，所有工作都因此停止</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <div id="submit">提交</div>
+    </div>
+
+<div id="footer-footer"></div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bug-submit.js"></script>
+<script src="../../script/common.js"></script>
+</html>

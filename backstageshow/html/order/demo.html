@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #main{width:600px;height:400px;}
+    </style>
+</head>
+<body>
+    <div id="main">
+
+    </div>
+    <div>
+1
+    </div>
+    <div>
+2
+    </div>
+    <div id="sss">
+3
+    </div>
+    <div>
+4
+    </div>
+<div id="demo">
+    <div v-for="(data,index) in list">{{data}}</div>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://unpkg.com/vue"></script>
+<script src="https://cdn.bootcss.com/echarts/3.7.2/echarts.js"></script>
+<script>
+
+    $("#sss").bind('DOMNodeInserted', function(e) {
+        alert('element now contains: ' + $(e.target).html());
+    });
+
+
+    $.ajax({
+        url:""
+    })
+    var dddd = 1;
+    if(dddd+1 ==2){
+        console.log(2)
+    }else if(dddd+2==3){
+        console.log(3)
+    }
+
+var demo = new Vue({
+    el:"#demo",
+    data:{
+        v:2,
+        list:["1","","4",""]
+    }
+})
+//function D(){
+//    var d = 136980.34;
+//    var e = parseFloat(demo.v) *100;
+//    console.log(e)
+//    e += Math.ceil((d*100-e)/5);
+//    demo.v = (e/100).toFixed(2);
+//    if(demo.v<d){
+//        setTimeout(D,20)
+//    }
+//}
+    function D(){
+        var d = 2000;
+        demo.v += Math.ceil((d-demo.v)/10);
+        if(demo.v<d){
+            setTimeout(D,20)
+        }
+    }
+    D();
+
+
+
+//    var list =[
+//        {
+//            id:14,
+//            status:2,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:[14,15],
+//            type:5,
+//            plan_time:'2017/12/17',
+//            send_time:'',
+//            limit_time:"2017/12/14-2018/11/20",
+//            invoice:0,
+//            expressname:"中通快递",
+//            expressnum:"533914674395",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            },{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"草色的大家好还不走之后就的部分"
+//            }]
+//        },
+//        {
+//            id:13,
+//            status:3,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:13,
+//            type:2,
+//            plan_time:'2017/12/14',
+//            send_time:'',
+//            limit_time:"2017/12/12-2017/12/16",
+//            invoice:0,
+//            expressname:"中通快递",
+//            expressnum:"533914674395",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            },{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"草色的大家好还不走之后就的部分"
+//            }]
+//        },
+//        {
+//            id:12,
+//            status:4,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:12,
+//            type:2,
+//            plan_time:'2017/12/11',
+//            send_time:'1998/08/21',
+//            limit_time:"2017/12/09-2017/12/13",
+//            invoice:0,
+//            expressname:"",
+//            expressnum:"",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            },{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"草色的大家好还不走之后就的部分"
+//            }]
+//        },
+//        {
+//            id:11,
+//            status:1,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"}],
+//            week:11,
+//            type:1,
+//            plan_time:'2017/12/08',
+//            send_time:'',
+//            limit_time:"2017/12/06-2017/12/10",
+//            invoice:1,
+//            expressname:"",
+//            expressnum:"",
+//            remark:[]
+//        },
+//        {
+//            id:10,
+//            status:1,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"3"}],
+//            week:10,
+//            type:1,
+//            plan_time:'2017/12/08',
+//            send_time:'',
+//            limit_time:"2017/12/06-2017/12/10",
+//            invoice:1,
+//            expressname:"",
+//            expressnum:"",
+//            remark:[]
+//        },
+//        {
+//            id:9,
+//            status:4,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:9,
+//            type:2,
+//            plan_time:'2017/12/05',
+//            send_time:'1998/08/21',
+//            limit_time:"2017/12/03-2017/12/07",
+//            invoice:1,
+//            expressname:"",
+//            expressnum:"",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            }]
+//        },
+//        {
+//            id:8,
+//            status:5,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:8,
+//            type:4,
+//            plan_time:'2017/12/02',
+//            send_time:'1998/08/21',
+//            limit_time:"2017/11/30-2017/12/04",
+//            invoice:0,
+//            expressname:"",
+//            expressnum:"",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            }]
+//        },
+//        {
+//            id:7,
+//            status:2,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:7,
+//            type:3,
+//            plan_time:'2017/11/29',
+//            send_time:'1998/08/21',
+//            limit_time:"2017/11/27-2017/12/01",
+//            invoice:0,
+//            expressname:"中通快递",
+//            expressnum:"533914674395",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            }]
+//        },
+//        {
+//            id:6,
+//            status:3,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:6,
+//            type:2,
+//            plan_time:'2017/11/26',
+//            send_time:'1998/08/21',
+//            limit_time:"2017/11/24-2017/11/28",
+//            invoice:0,
+//            expressname:"中通快递",
+//            expressnum:"533914674395",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            }]
+//        },
+//        {
+//            id:5,
+//            status:6,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:5,
+//            type:2,
+//            plan_time:'2017/11/23',
+//            send_time:'1998/08/21',
+//            limit_time:"2017/11/21-2017/11/25",
+//            invoice:0,
+//            expressname:"中通快递",
+//            expressnum:"533914674395",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            }]
+//        },
+//        {
+//            id:[2,3,4],
+//            status:1,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[
+//                [{name:"超能小黑中型犬鲜粮250gx14包",number:"1"}, {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"},{name:"自制低盐原味宠物羊奶酪狗零食100g",number:"3"}],
+//                [{name:"超能小黑中型犬鲜粮250gx14包",number:"1"}, {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//                [{name:"超能小黑中型犬鲜粮250gx14包",number:"1"}, {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}]
+//            ],
+//            week:[2,3,4],
+//            type:[1,2,3],
+//            plan_time:'2017/11/20',
+//            send_time:'',
+//            limit_time:"2017/11/18-2017/11/22",
+//            invoice:0,
+//            expressname:"中通快递",
+//            expressnum:"533914674395",
+//            remark:[]
+//        },
+//        {
+//            id:1,
+//            status:1,
+//            address:{
+//                id:0,
+//                username:"李大钊",
+//                phone:"13645121217",
+//                addressdetail:"山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱"
+//            },
+//            goodslist:[{name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"},
+//                {name:"超能小黑中型犬鲜粮250gx14包",number:"1"},
+//                {name:"自制低盐原味宠物羊奶酪狗零食100g",number:"2"}],
+//            week:1,
+//            type:1,
+//            plan_time:'2017/11/17',
+//            send_time:'',
+//            limit_time:"2017/11/15-2017/11/19",
+//            invoice:1,
+//            expressname:"",
+//            expressnum:"",
+//            remark:[{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"啊杀杀杀大撒大青蛙"
+//            },{
+//                name:"用户本人",
+//                time:"2017/08/03 02:23:22",
+//                content:"草色的大家好还不走之后就的部分"
+//            }]
+//        },
+//    ]
+//    temp= $.extend(true,{},list[2])
+//    var list2=[b];
+//
+//
+//    var myChart = echarts.init($("#main").get(0));
+//    var option = {
+//        title: {
+//            text: 'ECharts 入门示例'
+//        },
+//        tooltip: {},
+//        legend: {
+//            data:['销量']
+//        },
+//        xAxis: {
+//            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+//        },
+//        yAxis: {},
+//        series: [{
+//            name: '销量',
+//            type: 'line',
+//            data: [5, 20, 36, 10, 10, 20]
+//        }]
+//    };
+//    myChart.setOption(option);
+</script>
+</html>

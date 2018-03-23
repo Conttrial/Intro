@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/bug-list.less"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+    <div id="header-header">
+        <sr :index="7" ref="ch"></sr>
+    </div>
+    <div id="body">
+        <div id="body-nav">
+            <h3>当前位置：</h3>
+            <p>我的</p>
+            <div class="src">
+                <img src="../../image/next.png" alt=""/>
+                <p>Bug信息列表</p>
+            </div>
+        </div>
+        <div id="main">
+            <div id="main-left">
+                <div class="top">
+                    <img src="../../image/me_icon@30px.png" alt=""/>
+                    <h3>我的</h3>
+                </div>
+                <li class="active">
+                    <a href="bug-list.html"><p>Bug信息列表</p></a>
+                </li>
+                <li>
+                    <a href="weixinbackstage.html"><p>微信后台二维码</p></a>
+                </li>
+                <li>
+                    <a href="personal-data.html"><p>个人资料</p></a>
+                </li>
+            </div>
+            <div id="main-right">
+                <div class="bug-list" v-if="lis_all.length>0">
+                    <div class="top">
+                        <h3>Bug信息列表</h3>
+                        <a href="bug-submit.html">提交Bug</a>
+                    </div>
+                    <div class="list">
+                        <div class="list-top">
+                            <div><h3>问题描述</h3></div>
+                            <div><h3>所属平台</h3></div>
+                            <div><h3>所属页面&模块</h3></div>
+                            <div><h3>出现频次</h3></div>
+                            <div><h3>严重级别</h3></div>
+                            <div><h3>操作时间</h3></div>
+                            <div><h3>状态</h3></div>
+                        </div>
+                        <div class="list-content">
+                            <lis v-for="data in lis" :to="data"></lis>
+                            <!--<li>-->
+                                <!--<div class="content">-->
+                                    <!--<div>-->
+                                        <!--<div>-->
+                                            <!--<div>-->
+                                                <!--<img src="../../image/link.png" alt=""/><h3>查看截图</h3>-->
+                                            <!--</div>-->
+                                            <!--Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来的件开发产生什么影响？作为一个程序员，此刻，一个对世界费的语言，所有人所有所有人都是0基础你有什么想法？用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>后台</p>-->
+                                        <!--<p>管理中心</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>管理中心订单页</p>-->
+                                        <!--<p>订单详情页</p>-->
+                                        <!--<p>申请售后弹出控件</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>一定规律会触发</p>-->
+                                        <!--<p>100%发生</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>无法正常工作</p>-->
+                                        <!--<p>必须解决此bug</p>-->
+                                        <!--<p>才能进行正常工作</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>2017/10/13 16:00:00 提交</p>-->
+                                        <!--<div>-->
+                                            <!--<p>2017/10/13 16:00:00 解决</p>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<img src="../../image/done-gou.png" alt=""/>-->
+                                        <!--<p>已修复</p>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="repeat">-->
+                                    <!--<p>管理员：闫欢 @回复:</p>-->
+                                    <!--<p>Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来件开发产生什么影响？</p>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<div class="content">-->
+                                    <!--<div>-->
+                                        <!--<div>-->
+                                            <!--<div>-->
+                                                <!--<img src="../../image/link.png" alt=""/><h3>查看截图</h3>-->
+                                            <!--</div>-->
+                                            <!--Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来的件开发产生什么影响？作为一个程序员，此刻，一个对世界费的语言，所有人所有所有人都是0基础你有什么想法？用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>后台</p>-->
+                                        <!--<p>管理中心</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>管理中心订单页</p>-->
+                                        <!--<p>订单详情页</p>-->
+                                        <!--<p>申请售后弹出控件</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>一定规律会触发</p>-->
+                                        <!--<p>100%发生</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>无法正常工作</p>-->
+                                        <!--<p>必须解决此bug</p>-->
+                                        <!--<p>才能进行正常工作</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>2017/10/13 16:00:00 提交</p>-->
+                                        <!--<div>-->
+                                            <!--<p>2017/10/13 16:00:00 解决</p>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<img src="../../image/done-gou.png" alt=""/>-->
+                                        <!--<p>已修复</p>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="repeat">-->
+                                    <!--<p>管理员：闫欢 @回复:</p>-->
+                                    <!--<p>Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来件开发产生什么影响？</p>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<div class="content">-->
+                                    <!--<div>-->
+                                        <!--<div>-->
+                                            <!--<div>-->
+                                                <!--<img src="../../image/link.png" alt=""/><h3>查看截图</h3>-->
+                                            <!--</div>-->
+                                            <!--Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来的件开发产生什么影响？作为一个程序员，此刻，一个对世界费的语言，所有人所有所有人都是0基础你有什么想法？用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>后台</p>-->
+                                        <!--<p>管理中心</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>管理中心订单页</p>-->
+                                        <!--<p>订单详情页</p>-->
+                                        <!--<p>申请售后弹出控件</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>一定规律会触发</p>-->
+                                        <!--<p>100%发生</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>无法正常工作</p>-->
+                                        <!--<p>必须解决此bug</p>-->
+                                        <!--<p>才能进行正常工作</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>2017/10/13 16:00:00 提交</p>-->
+                                        <!--<div>-->
+                                            <!--<p>2017/10/13 16:00:00 解决</p>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<img src="../../image/done-gou.png" alt=""/>-->
+                                        <!--<p>已修复</p>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="repeat">-->
+                                    <!--<p>管理员：闫欢 @回复:</p>-->
+                                    <!--<p>Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来件开发产生什么影响？</p>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<div class="content">-->
+                                    <!--<div>-->
+                                        <!--<div>-->
+                                            <!--<div>-->
+                                                <!--<img src="../../image/link.png" alt=""/><h3>查看截图</h3>-->
+                                            <!--</div>-->
+                                            <!--Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来的件开发产生什么影响？作为一个程序员，此刻，一个对世界费的语言，所有人所有所有人都是0基础你有什么想法？用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>后台</p>-->
+                                        <!--<p>管理中心</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>管理中心订单页</p>-->
+                                        <!--<p>订单详情页</p>-->
+                                        <!--<p>申请售后弹出控件</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>一定规律会触发</p>-->
+                                        <!--<p>100%发生</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>无法正常工作</p>-->
+                                        <!--<p>必须解决此bug</p>-->
+                                        <!--<p>才能进行正常工作</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>2017/10/13 16:00:00 提交</p>-->
+                                        <!--<div>-->
+                                            <!--<p>2017/10/13 16:00:00 解决</p>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<img src="../../image/done-gou.png" alt=""/>-->
+                                        <!--<p>已修复</p>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<div class="content">-->
+                                    <!--<div>-->
+                                        <!--<div>-->
+                                            <!--<div>-->
+                                                <!--<img src="../../image/link.png" alt=""/><h3>查看截图</h3>-->
+                                            <!--</div>-->
+                                            <!--Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来的件开发产生什么影响？作为一个程序员，此刻，一个对世界费的语言，所有人所有所有人都是0基础你有什么想法？用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<div>-->
+                                            <!--<p>后台</p>-->
+                                            <!--<p>管理中心</p>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>管理中心订单页</p>-->
+                                        <!--<p>订单详情页</p>-->
+                                        <!--<p>申请售后弹出控件</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>一定规律会触发</p>-->
+                                        <!--<p>100%发生</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>无法正常工作</p>-->
+                                        <!--<p>必须解决此bug</p>-->
+                                        <!--<p>才能进行正常工作</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>2017/10/13 16:00:00 提交</p>-->
+                                        <!--<div>-->
+                                            <!--<p>2017/10/13 16:00:00 解决</p>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<img src="../../image/done-gou.png" alt=""/>-->
+                                        <!--<p>已修复</p>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                            <!--<li class="active">-->
+                                <!--<div class="content">-->
+                                    <!--<div>-->
+                                        <!--<div>-->
+                                            <!--<div>-->
+                                                <!--<img src="../../image/link.png" alt=""/><h3>查看截图</h3>-->
+                                            <!--</div>-->
+                                            <!--Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来的件开发产生什么影响？作为一个程序员，此刻，一个对世界费的语言，所有人所有所有人都是0基础你有什么想法？用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>后台</p>-->
+                                        <!--<p>管理中心</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>管理中心订单页</p>-->
+                                        <!--<p>订单详情页</p>-->
+                                        <!--<p>申请售后弹出控件</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>一定规律会触发</p>-->
+                                        <!--<p>100%发生</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>无法正常工作</p>-->
+                                        <!--<p>必须解决此bug</p>-->
+                                        <!--<p>才能进行正常工作</p>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<p>2017/10/13 16:00:00 提交</p>-->
+                                        <!--<div>-->
+                                            <!--<p>2017/10/13 16:00:00 解决</p>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<img src="../../image/done-gou.png" alt=""/>-->
+                                        <!--<p>已修复</p>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="repeat">-->
+                                    <!--<p>管理员：闫欢 @回复:</p>-->
+                                    <!--<p>Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C  的哪些不足？融合了哪些其他语言的优秀特性？将它和 C#相比各有什么优劣？它会未来件开发产生什么影响？</p>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                        </div>
+                        <div id="order-content-bottom">
+                            <div id="paging">
+                                <p>第<span>{{nowpage}}</span>页，共<span>{{Pages}}</span>页，合计<span>{{lis_all.length}}</span>条记录；每页显示</p>
+                                <div class="pages" data-page="100" @click="PageMenu">
+                                    <p>{{showpages}}条</p>
+                                    <div class="triangle"></div>
+                                    <div class="menu">
+                                        <div data-page="10" @click="ChangeShowPages">10条</div>
+                                        <div data-page="20" @click="ChangeShowPages">20条</div>
+                                        <div data-page="50" @click="ChangeShowPages">50条</div>
+                                        <div data-page="100" @click="ChangeShowPages">100条</div>
+                                        <div data-page="200" @click="ChangeShowPages">200条</div>
+                                        <div class="nowpage" @click="ChangeShowPages">{{showpages}}条</div>
+                                    </div>
+                                </div>
+                                <p>记录</p>
+                            </div>
+                            <div class="page-btn">
+                                <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                <div class="paging">
+                                    <div v-for="index in Pages" :class="{active: index == nowpage}" @click="NowPage">{{index}}</div>
+                                </div>
+                                <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="no-list" v-else>
+                    <img src="../../image/no-bug.png" alt=""/>
+                    <h3>你居然没有发现一点Bug</h3>
+                    <p>将你在产品中看到的，遇到的所有问题都提交给我们</p>
+                    <a href="bug-submit.html">提交Bug</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cover">
+        <div class="wrap">
+            <div class="top">
+                <h3>查看截图</h3><p v-if="imgs.length>1">（<span>{{now+1}}</span>/2）</p>
+                <div @click="Close">关闭</div>
+            </div>
+            <div class="content" :class="{active:imgs.length>1}">
+                    <div class="imgwrap" v-for="(data,index) in imgs" :key="index" v-if="index == now">
+                        <img :src="data"/>
+                        <a :href="data" target="_blank">查看原图</a>
+                    </div>
+                <div class="pre" :class="{active:now>0}" @click="Pre"></div>
+                <div class="next" :class="{active:imgs.length>1&&now<1}" @click="Next"></div>
+            </div>
+        </div>
+    </div>
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bug-list.js"></script>
+<script src="../../script/common.js"></script>
+</html>

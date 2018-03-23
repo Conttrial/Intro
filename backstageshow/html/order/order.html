@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="2" ref="ch"></sr>
+</div>
+<div id="body">
+    <div id="remarks-pop" @click="StopEvent">
+        <div class="triangle"></div>
+        <div id="remarks-content">
+            <li v-for="data in lis">
+                <div class="circle"></div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>{{data.name}}</h3>
+                            <span>{{data.time}}</span>
+                        </div>
+                        <p>订单备注</p>
+                    </div>
+                    <p>{{data.content}}</p>
+                </div>
+            </li>
+        </div>
+        <div id="remarks-bottom">
+            <textarea v-if="!show" name="remarks" id="remarks-text" v-model="remark_content"></textarea>
+            <div id="remarks-btns">
+                <div v-if="show" @click="OpenRemark" id="remarks-add">
+                    添加备注
+                </div>
+                <div v-else id="remarks-adding">
+                    <div id="remarks-week" @click="RemarkWeek">
+                        <p>@备注到{{remark_week}}</p>
+                        <div id="remarks-weeks">
+                            <div id="remarks-weeks-content">
+                                <div v-for="(data,index) in parseInt(week)" @click="WeekSelect" class="week" :data-week="index+1">
+                                    <div class="select"></div>
+                                    <p>{{index+1}}/{{week}}周</p>
+                                </div>
+                            </div>
+                            <div id="remarks-weeks-bottom" onclick="event.stopPropagation()">
+                                <div @click="AllSelect" class="allselect">
+                                    <div class="select"></div>
+                                    <p>全选</p>
+                                </div>
+                                <p @click="RemarkCancel">取消</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="remarks-adding-btns">
+                        <div id="remarks-cancel" @click="OpenRemarks">取消</div>
+                        <div id="remarks-submit" @click="SubmitRemark">发布</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="body-nav">
+        <h3>当前位置：</h3>
+        <p>所有订单</p>
+    </div>
+    <div id="search">
+        <input id="search-content" type="text" placeholder="用户名/手机号码/订单号"/>
+        <h3>成交时间：</h3>
+        <div id="search-starttime">
+            开始时间
+        </div>
+        <div class="line"></div>
+        <div id="search-endtime">
+            结束时间
+        </div>
+        <div id="search-status" data-status="100">
+            <p>全部状态</p>
+            <img src="../../image/pull-down.png" alt=""/>
+            <div class="menu usernone">
+                <li data-status="1"><div><p>已付款</p></div></li>
+                <li data-status="2"><div><p>未付款</p></div></li>
+                <li data-status="3"><div><p>暂停中</p></div></li>
+                <li data-status="4"><div><p>已完成</p></div></li>
+                <li data-status="5"><div><p>退款中</p></div></li>
+                <li data-status="6"><div><p>已退款</p></div></li>
+                <li data-status="7"><div><p>挂起</p></div></li>
+                <li data-status="8"><div><p>追回</p></div></li>
+                <li data-status="100" class="active"><div><p>全部状态</p></div></li>
+            </div>
+        </div>
+        <div id="search-btn">
+            <h3>搜索订单</h3>
+        </div>
+    </div>
+    <div id="main">
+        <div id="order-top">
+            <div>
+                <img src="../../image/list.png" alt=""/>
+                <h3>订单列表</h3>
+                <input type="checkbox"/>
+                <div class="btn-all active" @click="ChangeFrom($event)">
+                    <div></div>
+                    <h3>全部</h3>
+                </div>
+                <div @click="ChangeFrom($event)" data-from="1">
+                    <div></div>
+                    <h3>淘宝</h3>
+                </div>
+                <div @click="ChangeFrom($event)" data-from="2">
+                    <div></div>
+                    <h3>App</h3>
+                </div>
+                <div @click="ChangeFrom($event)" data-from="3">
+                    <div></div>
+                    <h3>微信</h3>
+                </div>
+            </div>
+            <div id="import-order" class="usernone">
+                <a href="order-import.html">导入订单</a>
+            </div>
+        </div>
+        <div id="order-status" class="usernone">
+            <div class="status-btn" :class="{active:status_limit==1}" data-status="1" @click="ChangeStatus"><h3>已付款</h3></div>
+            <div class="status-btn" :class="{active:status_limit==2}" data-status="2" @click="ChangeStatus"><h3>未付款</h3></div>
+            <div class="status-btn" :class="{active:status_limit==3}" data-status="3" @click="ChangeStatus"><h3>暂停中</h3></div>
+            <div class="status-btn" :class="{active:status_limit==4}" data-status="4" @click="ChangeStatus"><h3>已完成</h3></div>
+            <div class="status-btn" :class="{active:status_limit==5}" data-status="5" @click="ChangeStatus"><h3>退款中</h3></div>
+            <div class="status-btn" :class="{active:status_limit==6}" data-status="6" @click="ChangeStatus"><h3>已退款</h3></div>
+            <div class="status-btn" :class="{active:status_limit==7}" data-status="7" @click="ChangeStatus"><h3>挂起 <span v-if="Hangs">(<span>{{Hangs}}</span>)</span></h3></div>
+            <div class="status-btn" :class="{active:status_limit==8}" data-status="8" @click="ChangeStatus"><h3>追回<span v-if="Hangs">(<span>{{Recovers}}</span>)</span></h3></div>
+            <div class="status-btn" :class="{active:status_limit==100}" data-status="100" @click="ChangeStatus"><h3>全部</h3></div>
+        </div>
+        <div id="order-content">
+            <div id="order-content-top">
+                <p class="number">订单号/状态</p>
+                <p class="user">用户</p>
+                <p class="goods">商品</p>
+                <p class="cycle">周期</p>
+                <p class="money">金额</p>
+                <p class="times">购买时间</p>
+                <p class="remarks">备注</p>
+                <p class="check">操作</p>
+            </div>
+            <div id="order-content-main">
+                <li-order v-for="(data,index) in lis" :to="data" :index='index' :data-status="data.status"></li-order>
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li>-->
+                    <!--<div class="order-status"></div>-->
+                    <!--<div class="number">-->
+                        <!--#0102165625-->
+                    <!--</div>-->
+                    <!--<div class="user">-->
+                        <!--<div>-->
+                            <!--<p class="name">陈南康</p>-->
+                            <!--<p class="phone">15634026055</p>-->
+                            <!--<p class="from">App</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p class="address">山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="goods">-->
+                        <!--<div>-->
+                            <!--<p class="goodsname">超能小黑中型犬鲜粮250gx14包</p>-->
+                            <!--<p class="goodsnum">X1</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p class="goodsname">自制低盐原味宠物羊奶酪狗零食100g</p>-->
+                            <!--<p class="goodsnum">X1</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="cycle">-->
+                        <!--4周-->
+                    <!--</div>-->
+                    <!--<div class="money">-->
+                        <!--<p>￥99999.70</p>-->
+                        <!--<p class="money-type">微信支付</p>-->
+                    <!--</div>-->
+                    <!--<div class="status">-->
+                        <!--正常-->
+                    <!--</div>-->
+                    <!--<div class="times">-->
+                        <!--<p>2017/07/23</p>-->
+                        <!--<p>11:44:21</p>-->
+                    <!--</div>-->
+                    <!--<div class="remarks">-->
+                        <!--<div>-->
+                            <!--<p>备注</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="check">-->
+                        <!--<div>-->
+                            <!--<p>查看/管理</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+            </div>
+            <div id="order-content-bottom">
+                <div id="paging">
+                    <p>第<span>{{nowpage}}</span>页，共<span>{{Pages}}</span>页，合计<span>{{nownum}}</span>条记录；每页显示</p>
+                    <div class="pages" data-page="100" @click="PageMenu">
+                        <p>{{showpages}}条</p>
+                        <div class="triangle"></div>
+                        <div class="menu">
+                            <div data-page="10" @click="ChangeShowPages">10条</div>
+                            <div data-page="20" @click="ChangeShowPages">20条</div>
+                            <div data-page="50" @click="ChangeShowPages">50条</div>
+                            <div data-page="100" @click="ChangeShowPages">100条</div>
+                            <div data-page="200" @click="ChangeShowPages">200条</div>
+                            <div class="nowpage" @click="ChangeShowPages">{{showpages}}条</div>
+                        </div>
+                    </div>
+                    <p>记录</p>
+                </div>
+                <div class="page-btn">
+                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                    <div class="paging">
+                        <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                    </div>
+                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/order.js"></script>
+<script src="../../script/time.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet/less" href="../style/common.less"/>
+    <link rel="stylesheet" href="../style/login.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+    <title>超能小黑后台 - 登录</title>
+</head>
+<body>
+    <div id="wrap">
+        <img id="logo" src="../image/login-logo.png"/>
+        <div id="content">
+            <h3>用户登录</h3>
+            <div id="notice">
+                <p class="default active">此数据管理系统仅供超能小黑内部人员使用</p>
+                <div class="error">
+                    <img src="../image/warning.png" alt=""/>
+                    <p>您的登录密码输入错误，请检查后再次输入。</p>
+                </div>
+            </div>
+            <div id="username-wrap">
+                <p>用户名</p>
+                <input id="username" type="text" placeholder="请输入您的用户名"/>
+            </div>
+            <div id="password-wrap">
+                <p>登录密码</p>
+                <input id="password" type="password" placeholder="请输入您的登录密码"/>
+            </div>
+            <div id="login">
+                登录
+            </div>
+        </div>
+    </div>
+
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="../script/login.js"></script>
+</body>
+</html>

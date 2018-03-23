@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/goods.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="5" ref="ch"></sr>
+</div>
+<div id="body">
+    <div id="cover" class="pop">
+        <div>
+            <div class="top">
+                <img src="../../image/warning_icon@20px.png"/>
+                <p v-if="type==1">确定要删除选定商品吗？</p>
+                <p v-else-if="type==2">确定要下架选定商品吗？</p>
+            </div>
+            <div class="bottom">
+                <div class="confirm" @click="Confirm">确定</div>
+                <div class="cancel" @click="Cancel">取消</div>
+            </div>
+        </div>
+    </div>
+    <div id="body-nav">
+        <h3>当前位置：</h3>
+        <p>商品管理</p>
+    </div>
+    <div id="search">
+        <input type="text" placeholder="订阅计划名称/增值包名称/普通商品名称" v-model="keyword"/>
+        <h3>发布时间：</h3>
+        <div class="start-time">开始时间</div>
+        <p></p>
+        <div class="end-time">结束时间</div>
+        <div class="menu-wrap type" @click="MenuShow">
+            <p v-if="type==1">订阅计划</p>
+            <p v-else-if="type==2">增值包</p>
+            <p v-else-if="type==3">普通商品</p>
+            <img src="../../image/pull-down.png"/>
+            <div class="menu">
+                <div v-for="(data,index) in typelist" :data-type="data.type" @click="Select" :class="{active:data.type==type}">{{data.name}}</div>
+            </div>
+        </div>
+        <div class="menu-wrap status" @click="MenuShow">
+            <p v-if="status==99">全部状态</p>
+            <p v-else-if="status==1">上架中</p>
+            <p v-else-if="status==2">已下架</p>
+            <img src="../../image/pull-down.png"/>
+            <div class="menu">
+                <div v-for="(data,index) in statuslist" :data-status="data.status" @click="Select" :class="{active:data.status==status}">{{data.name}}</div>
+            </div>
+        </div>
+        <div class="search" @click="Search">
+            <h3>搜索</h3>
+        </div>
+    </div>
+    <div id="main">
+        <div class="main" v-show="!search">
+            <div class="top">
+                <div class="nav">
+                    <div>
+                        <div class="radio-circle-wrap" :class="{active:status==1}" data-status="1" @click="ChangeStatus">
+                            <div class="radio"></div>
+                            <p>上架中</p>
+                        </div>
+                        <div class="radio-circle-wrap" :class="{active:status==2}" data-status="2" @click="ChangeStatus">
+                            <div class="radio"></div>
+                            <p>已下架</p>
+                        </div>
+                        <div class="radio-circle-wrap" :class="{active:status==99}" data-status="99" @click="ChangeStatus">
+                            <div class="radio"></div>
+                            <p>全部状态</p>
+                        </div>
+                    </div>
+                    <div class="switch">
+                        <div :class="{active:type==1}" data-type="1" @click="ChangeType"><h3>订阅计划</h3></div>
+                        <div :class="{active:type==2}" data-type="2" @click="ChangeType"><h3>增值包</h3></div>
+                        <div :class="{active:type==3}" data-type="3" @click="ChangeType"><h3>普通商品</h3></div>
+                    </div>
+                    <a href="goods-release.html" class="goods-release">
+                        <div></div>
+                        <p>发布商品</p>
+                    </a>
+                </div>
+                <div class="limit-page">
+                    <div>
+                        <div class="radio-wrap" @click="AllSelect" :class="{active:allselect==1}">
+                            <div class="radio"></div>
+                            <p>全选</p>
+                        </div>
+                        <div class="delete" @click="DeleteGoods">删除</div>
+                        <div class="down" @click="DownGoods">下架</div>
+                        <div class="sales" :class="{active:sort=='sales'}" data-sort="sales" @click="ChangeSort">
+                            <div :class="{active:order==0}"></div>
+                            <p>销量</p>
+                        </div>
+                        <div class="time" :class="{active:sort=='time'}" data-sort="time" @click="ChangeSort">
+                            <div :class="{active:order==0}"></div>
+                            <p>发布时间</p>
+                        </div>
+                    </div>
+                    <div class="page-btn">
+                        <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                        <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                        <div class="paging">
+                            <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                        </div>
+                        <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                        <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="plan-wrap" v-if="type==1">
+                    <div v-for="(data,index) in planlist" v-if="index<nowpage*6 && index>=(nowpage-1)*6 &&data.status==status ||status==99" :class="{active:data.select==1}" :data-index="index">
+                        <div class="top" :style="{backgroundImage:'url('+data.backimg+')'}">
+                            <img :src="data.img" alt=""/>
+                            <div class="text">
+                                <p>类型：订阅计划</p>
+                                <p>规格：{{data.spec}}/周</p>
+                                <p>价格：{{data.price}}元/周</p>
+                                <p>销量：{{data.sales}}</p>
+                                <p>发布时间：{{data.time}}</p>
+                            </div>
+                        </div>
+                        <div class="main">
+                            <div class="title">
+                                <h3>主要商品</h3>
+                                <p>{{data.discount_info}}</p>
+                            </div>
+                            <div class="goods-wrap">
+                                <div>
+                                    <img :src="data.maingoods.img" alt=""/>
+                                    <div>
+                                        <div class="name">
+                                            <p>{{data.maingoods.name}}</p>
+                                            <p :class="{active:data.maingoods.oprice}">￥{{data.maingoods.price}}元/周</p>
+                                        </div>
+                                        <div class="spec">
+                                            <p class="detail">规格：{{data.maingoods.spec}}</p>
+                                            <p class="oprice" v-if="data.maingoods.oprice">￥{{data.maingoods.oprice}}元/周</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="title">
+                                <h3>增值包</h3>
+                            </div>
+                            <div class="goods-wrap goods-addpack">
+                                <div v-for="(dat,index) in data.addpackgoods">
+                                    <img :src="dat.img" alt=""/>
+                                    <div>
+                                        <div class="name">
+                                            <p>{{dat.name}}</p>
+                                            <p :class="{active:dat.oprice}">￥{{dat.price}}元/周</p>
+                                        </div>
+                                        <div class="spec">
+                                            <p class="detail">{{dat.content}}</p>
+                                            <p class="oprice" v-if="dat.oprice">￥{{dat.oprice}}元/周</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bottom">
+                            <div class="edit" :data-id="data.id" @click="GoodsEdit" data-type="plan">编辑</div>
+                            <div class="detail" :data-id="data.id" @click="GoodsDetail">查看详情</div>
+                        </div>
+                        <div class="cover" @click="Select"></div>
+                        <div class="select" @click="Select"></div>
+                        <div class="status">
+                            <p v-if="data.status==1">上架中</p>
+                            <p v-else-if="data.status==2">已下架</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="addpack-wrap" v-else-if="type==2">
+                    <div v-for="(data,index) in addpacklist" v-if="index<nowpage*6 && index>=(nowpage-1)*6 &&data.status==status ||status==99" :class="{active:data.select==1}" :data-index="index">
+                        <div class="top" :style="{backgroundImage:'url('+data.backimg+')'}">
+                            <img :src="data.img" alt=""/>
+                            <div class="text">
+                                <p>类型：增值包</p>
+                                <p>特点：{{data.selling_point}}/周</p>
+                                <p>价格：{{data.price}}元/周</p>
+                                <p>销量：{{data.sales}}</p>
+                                <p>发布时间：{{data.time}}</p>
+                            </div>
+                        </div>
+                        <div class="main">
+                            <div class="title">
+                                <h3>包含商品</h3>
+                                <p>{{data.discount_info}}</p>
+                            </div>
+                            <div class="goods-wrap goods-addpack">
+                                <div v-for="(dat,index) in data.goods">
+                                    <img :src="dat.img" alt=""/>
+                                    <div>
+                                        <div class="name">
+                                            <p>{{dat.name}}</p>
+                                            <p :class="{active:dat.oprice}">￥{{dat.price}}元/周</p>
+                                        </div>
+                                        <div class="spec">
+                                            <p class="detail">规格:{{dat.spec}}<span>数量:{{dat.number}}</span></p>
+                                            <p class="oprice" v-if="dat.oprice">￥{{dat.oprice}}元/周</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bottom">
+                            <div class="edit" @click="GoodsEdit"  data-type="addpack">编辑</div>
+                        </div>
+                        <div class="cover" @click="Select"></div>
+                        <div class="select" @click="Select"></div>
+                        <div class="status">
+                            <p v-if="data.status==1">上架中</p>
+                            <p v-else-if="data.status==2">已下架</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="normal-wrap" v-else-if="type==3">
+                    <div v-for="(data,index) in normallist" v-if="index<nowpage*12 && index>=(nowpage-1)*12 &&data.status==status ||status==99" :class="{active:data.select==1}" :data-index="index">
+                        <div class="img">
+                            <img :src="data.img" />
+                        </div>
+                        <div class="content">
+                            <p class="title">{{data.title}}</p>
+                            <div>
+                                <p class="spec">规格：<span>{{data.spec}}</span></p>
+                                <p class="sales">销量：<span>{{data.sales}}</span></p>
+                            </div>
+                            <div>
+                                <p class="price">价格：<span>{{data.price}}元/周</span></p>
+                            </div>
+                            <div>
+                                <p class="times">发布时间：<span>{{data.time}}</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom">
+                            <div class="edit" :data-id="data.id" @click="GoodsEdit" data-type="normal">编辑</div>
+                            <div class="detail" :data-id="data.id" @click="GoodsDetail">查看详情</div>
+                        </div>
+                        <div class="cover" @click="Select"></div>
+                        <div class="select" @click="Select"></div>
+                        <div class="status">
+                            <p v-if="data.status==1">上架中</p>
+                            <p v-else-if="data.status==2">已下架</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="limit-page">
+                <div>
+                    <div class="radio-wrap" @click="AllSelect" :class="{active:allselect==1}">
+                        <div class="radio"></div>
+                        <p>全选</p>
+                    </div>
+                    <div class="delete" @click="DeleteGoods">删除</div>
+                    <div class="down" @click="DownGoods">下架</div>
+                </div>
+                <div class="page-btn">
+                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                    <div class="paging">
+                        <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                    </div>
+                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                </div>
+            </div>
+        </div>
+        <div class="search-result" v-show="search==1">
+            <div class="title">
+                <p>在<span>订阅计划</span>类目中，通过关键词<span>“{{keyword}}”</span>共搜索到 <span>{{search_result.planlist.length}}个</span> 相符合结果；</p>
+                <div @click="CheckAll" data-type="planlist_all">
+                    <h3>查看全部</h3>
+                    <img src="../../image/next.png"/>
+                </div>
+            </div>
+            <div class="content plan-wrap">
+                <div class="no-result" v-if="search_result.planlist.length==0">
+                    <img src="../../image/Search_default@120px.png"/>
+                    <h3>没有找到“<span>{{keyword}}</span>”相关产品</h3>
+                    <p>检查一下是否有错别字或者尝试调整一下搜索关键词</p>
+                </div>
+                <div v-for="(data,index) in search_result.planlist" v-if="index<3 ||search_result.planlist_all ==1"  :data-index="index">
+                    <div class="top" :style="{backgroundImage:'url('+data.backimg+')'}">
+                        <img :src="data.img" alt=""/>
+                        <div class="text">
+                            <p>类型：订阅计划</p>
+                            <p>规格：{{data.spec}}/周</p>
+                            <p>价格：{{data.price}}元/周</p>
+                            <p>销量：{{data.sales}}</p>
+                            <p>发布时间：{{data.time}}</p>
+                        </div>
+                    </div>
+                    <div class="main">
+                        <div class="title">
+                            <h3>主要商品</h3>
+                            <p>{{data.discount_info}}</p>
+                        </div>
+                        <div class="goods-wrap">
+                            <div>
+                                <img :src="data.maingoods.img" alt=""/>
+                                <div>
+                                    <div class="name">
+                                        <p>{{data.maingoods.name}}</p>
+                                        <p :class="{active:data.maingoods.oprice}">￥{{data.maingoods.price}}元/周</p>
+                                    </div>
+                                    <div class="spec">
+                                        <p class="detail">规格：{{data.maingoods.spec}}</p>
+                                        <p class="oprice" v-if="data.maingoods.oprice">￥{{data.maingoods.oprice}}元/周</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="title">
+                            <h3>增值包</h3>
+                        </div>
+                        <div class="goods-wrap goods-addpack">
+                            <div v-for="(dat,index) in data.addpackgoods">
+                                <img :src="dat.img" alt=""/>
+                                <div>
+                                    <div class="name">
+                                        <p>{{dat.name}}</p>
+                                        <p :class="{active:dat.oprice}">￥{{dat.price}}元/周</p>
+                                    </div>
+                                    <div class="spec">
+                                        <p class="detail">{{dat.content}}</p>
+                                        <p class="oprice" v-if="dat.oprice">￥{{dat.oprice}}元/周</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="edit" :data-id="data.id" @click="GoodsEdit" data-type="plan">编辑</div>
+                        <div class="detail" :data-id="data.id" @click="GoodsDetail">查看详情</div>
+                    </div>
+                    <div class="status">
+                        <p v-if="data.status==1">上架中</p>
+                        <p v-else-if="data.status==2">已下架</p>
+                    </div>
+                </div>
+            </div>
+            <div class="title margin">
+                <p>在<span>增值包</span>类目中，通过关键词<span>“{{keyword}}”</span>共搜索到 <span>{{search_result.addpacklist.length}}个</span> 相符合结果；</p>
+                <div @click="CheckAll" data-type="addpacklist_all">
+                    <h3>查看全部</h3>
+                    <img src="../../image/next.png"/>
+                </div>
+            </div>
+            <div class="content addpack-wrap">
+                <div class="no-result" v-if="search_result.addpacklist.length==0">
+                    <img src="../../image/Search_default@120px.png"/>
+                    <h3>没有找到“<span>{{keyword}}</span>”相关产品</h3>
+                    <p>检查一下是否有错别字或者尝试调整一下搜索关键词</p>
+                </div>
+                <div v-for="(data,index) in search_result.addpacklist" v-if="index<3 ||search_result.addpacklist_all ==1" :data-index="index">
+                    <div class="top" :style="{backgroundImage:'url('+data.backimg+')'}">
+                        <img :src="data.img" alt=""/>
+                        <div class="text">
+                            <p>类型：增值包</p>
+                            <p>特点：{{data.selling_point}}/周</p>
+                            <p>价格：{{data.price}}元/周</p>
+                            <p>销量：{{data.sales}}</p>
+                            <p>发布时间：{{data.time}}</p>
+                        </div>
+                    </div>
+                    <div class="main">
+                        <div class="title">
+                            <h3>包含商品</h3>
+                            <p>{{data.discount_info}}</p>
+                        </div>
+                        <div class="goods-wrap goods-addpack">
+                            <div v-for="(dat,index) in data.goods">
+                                <img :src="dat.img" alt=""/>
+                                <div>
+                                    <div class="name">
+                                        <p>{{dat.name}}</p>
+                                        <p :class="{active:dat.oprice}">￥{{dat.price}}元/周</p>
+                                    </div>
+                                    <div class="spec">
+                                        <p class="detail">规格:{{dat.spec}}<span>数量:{{dat.number}}</span></p>
+                                        <p class="oprice" v-if="dat.oprice">￥{{dat.oprice}}元/周</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="edit" @click="GoodsEdit" data-type="addpack">编辑</div>
+                    </div>
+                    <div class="status">
+                        <p v-if="data.status==1">上架中</p>
+                        <p v-else-if="data.status==2">已下架</p>
+                    </div>
+                </div>
+            </div>
+            <div class="title margin">
+                <p>在<span>普通商品</span>类目中，通过关键词<span>“{{keyword}}”</span>共搜索到 <span>{{search_result.normallist.length}}个</span> 相符合结果；</p>
+                <div @click="CheckAll" data-type="normallist_all">
+                    <h3>查看全部</h3>
+                    <img src="../../image/next.png"/>
+                </div>
+            </div>
+            <div class="content normal-wrap">
+                <div class="no-result" v-if="search_result.normallist.length==0">
+                    <img src="../../image/Search_default@120px.png"/>
+                    <h3>没有找到“<span>{{keyword}}</span>”相关产品</h3>
+                    <p>检查一下是否有错别字或者尝试调整一下搜索关键词</p>
+                </div>
+                <div v-for="(data,index) in search_result.normallist" v-if="index<4 ||search_result.normallist_all ==1"  :data-index="index">
+                    <div class="img">
+                        <img :src="data.img" />
+                    </div>
+                    <div class="content">
+                        <p class="title">{{data.title}}</p>
+                        <div>
+                            <p class="spec">规格：<span>{{data.spec}}</span></p>
+                            <p class="sales">销量：<span>{{data.sales}}</span></p>
+                        </div>
+                        <div>
+                            <p class="price">价格：<span>{{data.price}}元/周</span></p>
+                        </div>
+                        <div>
+                            <p class="times">发布时间：<span>{{data.time}}</span></p>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="edit" :data-id="data.id" @click="GoodsEdit" data-type="'normal'">编辑</div>
+                        <div class="detail" :data-id="data.id" @click="GoodsDetail">查看详情</div>
+                    </div>
+                    <div class="status">
+                        <p v-if="data.status==1">上架中</p>
+                        <p v-else-if="data.status==2">已下架</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/time.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/goods.js"></script>
+</html>

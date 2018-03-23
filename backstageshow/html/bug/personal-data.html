@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet" href="../../style/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/personal-data.less"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="8" ref="ch"></sr>
+</div>
+<div id="body">
+    <div id="main_left">
+        <div id="main-left">
+            <div class="top">
+                <img src="../../image/me_icon@30px.png" alt=""/>
+                <h3>我的</h3>
+            </div>
+            <li >
+                <a href="weixinbackstage.html"><p>微信后台二维码</p></a>
+            </li>
+            <li  class="active">
+                <a href=""><p>个人资料</p></a>
+            </li>
+        </div>
+    </div>
+    <div id="main-right">
+        <div id="body-nav">
+            <h3>当前位置：</h3>
+            <p>我的</p>
+            <div class="src">
+                <img src="../../image/next.png" alt=""/>
+                <p>个人资料</p>
+            </div>
+        </div>
+        <div class="wrap">
+            <div id="card">
+                <div class="block1">
+
+                </div>
+                <div class="block2">
+
+                </div>
+                <div class="top">
+                    <div class="head">
+                        <img  :src="img"/>
+                    </div>
+                    <div class="white">
+
+                    </div>
+                    <div class="edit" data-toggle="modal" data-target="#edit">
+                        <img src="../../image/edit_icon@20px.png"/>
+                        <p>编辑</p>
+                    </div>
+                </div>
+                <div class="content">
+                    <div>
+                        <h3>昵称：</h3>
+                        <p>{{name}}</p>
+                    </div>
+                    <div>
+                        <h3>性别：</h3>
+                        <p>{{sex}}</p>
+                    </div>
+                    <div>
+                        <h3>手机号码：</h3>
+                        <p>{{phone}}</p>
+                    </div>
+                    <div>
+                        <h3>入职时间：</h3>
+                        <p>{{join_time}}</p>
+                    </div>
+                    <div>
+                        <h3>职位/部门: </h3>
+                        <p>{{department}}</p>
+                    </div>
+                    <div>
+                        <h3>PER ID: </h3>
+                        <p>{{preid}}</p>
+                    </div>
+                    <div>
+                        <h3>累计工时:  </h3>
+                        <p>{{worktime}}</p>
+                    </div>
+                    <div>
+                        <h3>系统角色:  </h3>
+                        <p>{{type}}</p>
+                    </div>
+                    <div>
+                        <h3>紧急联系人:  </h3>
+                        <p>{{contactsname}},{{contactsphone}}</p>
+                    </div>
+                    <div class="address">
+                        <h3>联系地址:  </h3>
+                        <p>{{address}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+        <div class="modal-dialog" role="document" onclick="this.parentNode.click()">
+            <div class="wrap" onclick="event.stopPropagation()">
+                <div class="top">
+                    <h3>编辑</h3>
+                    <p onclick="this.parentNode.parentNode.parentNode.click()">关闭</p>
+                </div>
+                <div class="content">
+                    <div class="first">
+                        <p>上传图片：</p>
+                        <div class="imgup">
+                            <input id="file1"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                            <img :src="img" alt=""/>
+                            <div class="cover">
+                                <p>重新上传</p>
+                                <img src="../../image/close.png" alt="" class="close"/>
+                            </div>
+                        </div>
+                        <div class="user">
+                            <div>
+                                <p>紧急联系人：</p>
+                                <input type="text" v-model="contactsname"/>
+                            </div>
+                            <div>
+                                <p>联系人手机：</p>
+                                <input type="text" v-model="contactsphone"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p>登录名：</p>
+                        <input type="text" v-model="nickname"/>
+                    </div>
+                    <div>
+                        <p>原始密码：</p>
+                        <input type="password" v-model="password"/>
+                    </div>
+                    <div>
+                        <p>新的密码：</p>
+                        <input type="password" v-model="npassword"/>
+                    </div>
+                    <div>
+                        <p>确认密码：</p>
+                        <input type="password" v-model="cpassword"/>
+                    </div>
+                    <li class="btns">
+                        <div class="cancel">
+                            取消
+                        </div>
+                        <div class="submit">
+                            保存
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bootstrap.min.js"></script>
+<script src="../../script/personal-data.js"></script>
+<script src="../../script/common.js"></script>
+</html>

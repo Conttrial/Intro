@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet/less" type="text/css" href="../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../style/order-common.less"/>
+    <link rel="stylesheet/less" href="../style/index.less"/>
+    <link rel="stylesheet" href="../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="1" ref="ch"></sr>
+</div>
+<div id="search-wrap">
+    <search-nav></search-nav>
+</div>
+<div id="body">
+    <div id="title">
+        <div>
+            <img src="../image/Datalist@30px.png" alt=""/>
+            <h3>全部数据</h3>
+            <p v-cloak>数据统计截止至：{{today}}</p>
+        </div>
+
+        <div class="time-select">
+            <img src="../image/Date_icon@20px.png"/>
+            <p>选择时间：<span class="st">2017/07/12</span> ~ <span class="et">2017/07/18</span></p>
+        </div>
+    </div>
+    <div id="sale-data">
+        <div class="top">
+            <div class="left">
+                <img src="../image/Sale_data@30px.png" alt=""/>
+                <h3>销售数据</h3>
+                <div class="radio-wrap" @click="ChangePlatform('sales')" data-platform="99" :class="{active:salesplatform.platform99}">
+                    <div></div>
+                    <h3>全部</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('sales')" data-platform="1" :class="{active:salesplatform.platform1}">
+                    <div></div>
+                    <h3>淘宝</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('sales')" data-platform="2" :class="{active:salesplatform.platform2}">
+                    <div></div>
+                    <h3>App</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('sales')" data-platform="3" :class="{active:salesplatform.platform3}">
+                    <div></div>
+                    <h3>微信</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('sales')" data-platform="4" :class="{active:salesplatform.platform4}">
+                    <div></div>
+                    <h3>线下</h3>
+                </div>
+            </div>
+            <div class="right">
+                <p v-cloak>数据统计截止至：{{today}}</p>
+            </div>
+        </div>
+        <div class="content">
+            <div>
+                <div>
+                    <img src="../image/Already_paid@60px.png" alt=""/>
+                    <div>
+                        <h3>已付款金额（<span>/</span>元）</h3>
+                        <h4 v-cloak class="num" data-name="amount">{{sales.paidprice}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak><span class="oldnum" data-name="amount">{{sales.opaidprice}}</span> <span>元</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Pay_order@60px.png" alt=""/>
+                    <div>
+                        <h3>已付款订单（<span>/</span>单）</h3>
+                        <h4 v-cloak class="num" data-name="order">{{sales.paidordernum}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak><span class="oldnum" data-name="order">{{sales.opaidordernum}}</span> <span>单</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Pay_user@60px.png" alt=""/>
+                    <div>
+                        <h3>成交人数（<span>/</span>人）</h3>
+                        <h4 v-cloak class="num" data-name="number">{{sales.paidusernum}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak><span class="oldnum" data-name="number">{{sales.opaidusernum}}</span> <span>人</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Unpaid@60px.png" alt=""/>
+                    <div>
+                        <h3>未付款金额（<span>/</span>元）</h3>
+                        <h4 v-cloak class="num" data-name="no_amount">{{sales.unpaidprice}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak><span class="oldnum" data-name="no_amount">{{sales.ounpaidprice}}</span> <span>元</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Unpaid_order@60px.png" alt=""/>
+                    <div>
+                        <h3>未付款订单（<span>/</span>单）</h3>
+                        <h4 v-cloak class="num" data-name="no_order">{{sales.unpaidordernum}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak><span class="oldnum" data-name="no_order">{{sales.ounpaidordernum}}</span> <span>单</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Unpaid_user@60px.png" alt=""/>
+                    <div>
+                        <h3>未付款人数（<span>/</span>人）</h3>
+                        <h4 v-cloak class="num" data-name="no_number">{{sales.unpaidusernum}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak><span class="oldnum" data-name="no_number">{{sales.ounpaidusernum}}</span> <span>人</span></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="order-data">
+        <div class="top">
+            <div class="left">
+                <img src="../image/Order_data@30px.png" alt=""/>
+                <h3>订单数据</h3>
+                <div class="radio-wrap" @click="ChangePlatform('order')" data-platform="99" :class="{active:orderplatform.platform99}">
+                    <div></div>
+                    <h3>全部</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('order')" data-platform="1" :class="{active:orderplatform.platform1}">
+                    <div></div>
+                    <h3>淘宝</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('order')" data-platform="2" :class="{active:orderplatform.platform2}">
+                    <div></div>
+                    <h3>App</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('order')" data-platform="3" :class="{active:orderplatform.platform3}">
+                    <div></div>
+                    <h3>微信</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangePlatform('order')" data-platform="4" :class="{active:orderplatform.platform4}">
+                    <div></div>
+                    <h3>线下</h3>
+                </div>
+            </div>
+            <div class="right">
+                <p v-cloak>数据统计截止至：{{today}}</p>
+            </div>
+        </div>
+        <div class="content">
+            <div>
+                <div>
+                    <img src="../image/Completed_order@60px.png" alt=""/>
+                    <div>
+                        <h3>已完成（<span>/</span>单）</h3>
+                        <h4 class="num" v-cloak>{{order.compeleted}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak>{{order.ocompeleted}} <span>单</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Stop_order@60px.png" alt=""/>
+                    <div>
+                        <h3>暂停中（<span>/</span>单）</h3>
+                        <h4 v-cloak class="num">{{order.paused}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak>{{order.opaused}} <span>单</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Unpaid_order_bw@60px.png" alt=""/>
+                    <div>
+                        <h3>未付款（<span>/</span>单）</h3>
+                        <h4 class="num" v-cloak>{{order.unpaid}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak>{{order.ounpaid}} <span>单</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Not_shipped@60px.png" alt=""/>
+                    <div>
+                        <h3>待发出（<span>/</span>单）</h3>
+                        <h4 class="num" v-cloak>{{order.nosend}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak>{{order.onosend}} <span>单</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Warnning_order@60px.png" alt=""/>
+                    <div>
+                        <h3>挂起中（<span>/</span>单）</h3>
+                        <h4 class="num" v-cloak>{{order.hang}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak>{{order.ohang}} <span>单</span></h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <img src="../image/Recover@60px.png" alt=""/>
+                    <div>
+                        <h3>追回中（<span>/</span>单）</h3>
+                        <h4 class="num" v-cloak>{{order.recover}}</h4>
+                    </div>
+                </div>
+                <div>
+                    <p>昨天</p>
+                    <h3 v-cloak>{{order.orecover}} <span>单</span></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="service-goods">
+        <div id="after-sales-data">
+            <div class="top">
+                <div class="left">
+                    <img src="../image/Warnning@30px.png" alt=""/>
+                    <h3>售后数据</h3>
+                </div>
+                <div class="right">
+                    <p v-cloak>数据统计截止至：{{today}}</p>
+                </div>
+            </div>
+            <div class="content">
+                <div>
+                    <div>
+                        <div>
+                            <h3>申请退款（<span>/</span>单）</h3>
+                            <h4 class="num" v-cloak>{{service.refund}}</h4>
+                        </div>
+                    </div>
+                    <div>
+                        <p>昨天</p>
+                        <h3 v-cloak>{{service.orefund}} <span>单</span></h3>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>申请补发（<span>/</span>单）</h3>
+                            <h4 class="num" v-cloak>{{service.reissue}}</h4>
+                        </div>
+                    </div>
+                    <div>
+                        <p>昨天</p>
+                        <h3 v-cloak>{{service.oreissue}} <span>单</span></h3>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>申请补赠（<span>/</span>单）</h3>
+                            <h4 class="num" v-cloak>{{service.reissuegift}}</h4>
+                        </div>
+                    </div>
+                    <div>
+                        <p>昨天</p>
+                        <h3 v-cloak>{{service.oreissuegift}} <span>单</span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="goods-data">
+            <div class="top">
+                <div class="left">
+                    <img src="../image/Item_data@30px.png" alt=""/>
+                    <h3>商品数据</h3>
+                </div>
+                <div class="right">
+                    <p v-cloak>数据统计截止至：{{today}}</p>
+                </div>
+            </div>
+            <div class="content">
+                <div>
+                    <div>
+                        <div>
+                            <h3>订阅计划（<span>/</span>个）</h3>
+                            <h4 class="num" v-cloak>{{goods.plan}}</h4>
+                        </div>
+                    </div>
+                    <div>
+                        <p>昨天</p>
+                        <h3 v-cloak>{{goods.oplan}} <span>个</span></h3>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>增值包（<span>/</span>个）</h3>
+                            <h4 class="num" v-cloak>{{goods.addpack}}</h4>
+                        </div>
+                    </div>
+                    <div>
+                        <p>昨天</p>
+                        <h3 v-cloak>{{goods.oaddpack}} <span>个</span></h3>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>普通商品（<span>/</span>个）</h3>
+                            <h4 class="num" v-cloak>{{goods.normal}}</h4>
+                        </div>
+                    </div>
+                    <div>
+                        <p>昨天</p>
+                        <h3 v-cloak>{{goods.onormal}} <span>个</span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="from">
+        <div class="title">
+            <div>
+                <img src="../image/from.png" alt=""/>
+                <h3>服务人数</h3>
+                <p v-cloak>数据统计截止至：{{today}}</p>
+            </div>
+            <div class="time-select2">
+                <img src="../image/Date_icon@20px.png"/>
+                <p>选择时间：<span class="st">2017/07/10</span> ~ <span class="et">2017/07/16</span></p>
+            </div>
+        </div>
+        <div class="content">
+            <div>
+                <div class="taobao">
+                    <div class="top">
+                        <div>
+                            <img src="../image/Tb_data@60px.png"/>
+                            <div>
+                                <h3>截止本周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{taobao.untilnow}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>对比上周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{taobao.compare}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>浮动比例（%）</h3>
+                                <h4 :class="{add:percent.taobao,down:!percent.taobao}" v-cloak>{{taobao.percent}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <div class="pre" @click="PreWeek('taobao')" :class="{active:PreControl.taobao}">上一组</div>
+                        <div class="next" @click="NextWeek('taobao')" :class="{active:NextControl.taobao}">下一组</div>
+                    </div>
+                    <div id="taobaochart" class="chart">
+                    </div>
+                </div>
+                <div class="weixin">
+                    <div class="top">
+                        <div>
+                            <img src="../image/Wx_data@60px.png"/>
+                            <div>
+                                <h3>截止本周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{weixin.untilnow}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>对比上周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{weixin.compare}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>浮动比例（%）</h3>
+                                <h4 :class="{add:percent.weixin,down:!percent.weixin}" v-cloak>{{weixin.percent}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <div class="pre" @click="PreWeek('weixin')" :class="{active:PreControl.weixin}">上一组</div>
+                        <div class="next" @click="NextWeek('weixin')" :class="{active:NextControl.weixin}">下一组</div>
+                    </div>
+                    <div id="weixinchart" class="chart">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="app">
+                    <div class="top">
+                        <div>
+                            <img src="../image/App_data@60px.png"/>
+                            <div>
+                                <h3>截止本周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{app.untilnow}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>对比上周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{app.compare}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>浮动比例（%）</h3>
+                                <h4 :class="{add:percent.app,down:!percent.app}" v-cloak>{{app.percent}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <div class="pre" @click="PreWeek('app')" :class="{active:PreControl.app}">上一组</div>
+                        <div class="next" @click="NextWeek('app')" :class="{active:NextControl.app}">下一组</div>
+                    </div>
+                    <div id="appchart" class="chart">
+                    </div>
+                </div>
+                <div class="offline">
+                    <div class="top">
+                        <div>
+                            <img src="../image/Ld_data@60px.png"/>
+                            <div>
+                                <h3>截止本周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{offline.untilnow}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>对比上周（<span>/</span>人）</h3>
+                                <h4 v-cloak>{{offline.compare}}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3>浮动比例（%）</h3>
+                                <h4 :class="{add:percent.offline,down:!percent.offline}" v-cloak>{{offline.percent}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <div class="pre" @click="PreWeek('offline')" :class="{active:PreControl.offline}">上一组</div>
+                        <div class="next" @click="NextWeek('offline')" :class="{active:NextControl.offline}">下一组</div>
+                    </div>
+                    <div id="offlinechart" class="chart">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.7.2/echarts.js"></script>
+<script src="../script/time.js"></script>
+<script src="../script/common.js"></script>
+<script src="../script/order-common.js"></script>
+<script src="../script/index.js"></script>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body id="body">
+
+</body>
+<script>
+    var id = location.href.split("?")[1].split("=")[1];
+    $.ajax({
+        url:"",
+        type:"POST",
+        data:{
+            userid:localStorage.userid,
+            token:localStorage.token,
+            goodid:id
+        },
+        //dataType:"json",
+        success:function(e){
+            var e={
+                error:0,
+                content:'  <div id="body-nav"> <h3>后台获取数据</h3> <p>商品详情</p> </div>'
+            }
+            if(e.error>0){
+                alert(e.message)
+            }else{
+                document.getElementById("body").innerHTML = e.content;
+            }
+        }
+
+    })
+</script>
+</html>

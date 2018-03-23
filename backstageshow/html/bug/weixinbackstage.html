@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/weixinbackstage.less"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="8" ref="ch"></sr>
+</div>
+<div id="body">
+
+    <div id="main">
+        <div id="main-left">
+            <div class="top">
+                <img src="../../image/me_icon@30px.png" alt=""/>
+                <h3>我的</h3>
+            </div>
+            <li  class="active">
+                <a href="#"><p>微信后台二维码</p></a>
+            </li>
+            <li>
+                <a href="personal-data.html"><p>个人资料</p></a>
+            </li>
+        </div>
+        <div id="main-right">
+            <div id="body-nav">
+                <h3>当前位置：</h3>
+                <p>我的</p>
+                <div class="src">
+                    <img src="../../image/next.png" alt=""/>
+                    <p>微信后台二维码</p>
+                </div>
+            </div>
+            <div class="main-right">
+                <div class="left">
+                    <div>
+                        <img src="../../image/Dcc_b_icon@60px.png" alt=""/>
+                        <div>
+                            <h3>管理中心微信版</h3>
+                            <p>VERSION 2.0</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p>您是受邀请用户，立即绑定使用</p>
+                        <img class="next" src="../../image/Arrow_next@20px.png" alt=""/>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="top">
+                        <img src="../../image/Wechat_icon@W=40px H=34px.png" alt=""/>
+                        <h3>微信后台二维码</h3>
+
+                    </div>
+                    <div class="content">
+                        <div id="code">
+                            <div>
+                                <h3>获取失败</h3>
+                                <p>点击重新获取</p>
+                            </div>
+                            <img id="codeimg" src="" alt=""/>
+                        </div>
+                        <h3>使用方法：</h3>
+                        <p>请使用微信扫描此二维码，申请移动端后台使用权限；</p>
+                        <h3>特别说明：</h3>
+                        <p>此二维码具有唯一性，专人专码，请务必使用本人微信扫描此二维码，一旦扫描申请后此二维码将失效；</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/weixinbackstage.js"></script>
+<script src="../../script/common.js"></script>
+</html>

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet" href="../../style/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/goods-release.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../../ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../../ueditor.all.min.js"> </script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="../../lang/zh-cn/zh-cn.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="5" ref="ch"></sr>
+</div>
+<div id="body">
+    <div id="cover" class="pop">
+        <div>
+            <div class="top">
+                <img src="../../image/warning_icon@20px.png"/>
+                <p>确定要删除此规格吗？</p>
+            </div>
+            <div class="bottom">
+                <div class="confirm" @click="Confirm">确定</div>
+                <div class="cancel" @click="Cancel">取消</div>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="main-left">
+            <div class="top">
+                <img src="../../image/me_icon@30px.png" alt=""/>
+                <h3>快速导航栏</h3>
+            </div>
+            <a href="#">
+                <p>所属店铺</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#">
+                <p>所属类目</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#shop">
+                <p>商品标题</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#">
+                <p>商品卖点</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#">
+                <p>商品图片</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#">
+                <p>商品属性</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#">
+                <p>详情描述</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#express">
+                <p>店铺分类</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#express">
+                <p>选择快递</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+            <a href="#express">
+                <p>其他设置</p>
+                <img src="../../image/next.png" alt=""/>
+            </a>
+        </div>
+        <div id="main-right">
+            <div id="body-nav">
+                <h3>当前位置：</h3>
+                <a href="goods.html">商品管理</a>
+                <div class="src">
+                    <img src="../../image/next.png" alt=""/>
+                    <p>商品发布</p>
+                </div>
+            </div>
+            <div class="main-right">
+                <div class="top">
+                    <h3>商品发布</h3>
+                </div>
+                <div class="main-nav">
+                    <div :class="{active:type=='plan'}" data-type="plan" @click="ChangePage">订阅计划</div>
+                    <div :class="{active:type=='addpack'}" data-type="addpack" @click="ChangePage">增值包</div>
+                    <div :class="{active:type=='normal'}" data-type="normal" @click="ChangePage">普通商品</div>
+                </div>
+                <div class="main">
+                    <div class="plan" v-show="type=='plan'">
+                        <div class="title">
+                            <h3>1.商品基本信息设置</h3>
+                        </div>
+                        <li class="shop" id="shop">
+                            <p>所属店铺</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{plan.shop}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in plan.shoplist" @click="Select" :class="{active:data.id == plan.shopid}" :data-id="data.id">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="type">
+                            <p>所属类目</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{plan.category}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in plan.categorylist" @click="Select" :class="{active:data.name == plan.category}" :data-id="data.id">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="title">
+                            <p>标题</p>
+                            <input type="text" v-model="plan.title" @input="TextInput" maxlength="60"/>
+                            <div class="count"><p><span>0</span>/60</p></div>
+                        </li>
+                        <li class="point">
+                            <p>卖点</p>
+                            <textarea name="" v-model="plan.selling_point" @input="TextInput" maxlength="120"></textarea>
+                            <div class="count"><p><span>0</span>/120</p></div>
+                        </li>
+                        <li class="imgs">
+                            <p>图片设置</p>
+                            <div>
+                                <div>
+                                    <p>(产品头图，分辨率：210px*210px；容量不要太大。)</p>
+                                    <div class="imgup">
+                                        <input id="file1"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                        <img src="" alt=""/>
+                                        <div class="cover">
+                                            <p>重新上传</p>
+                                            <img src="../../image/close.png" alt="" class="close"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>(背景图片，分辨率：750px*438px；容量不要太大。)</p>
+                                    <div class="imgup">
+                                        <input id="file2"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                        <img src="" alt=""/>
+                                        <div class="cover">
+                                            <p>重新上传</p>
+                                            <img src="../../image/close.png" alt="" class="close"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="goods-setting">
+                            <p>商品设置</p>
+                            <div>
+                                <div class="plan-goods-wrap">
+                                    <div class="add-plan" v-if="plan.plangoods.selectgoods.length == 0" @click="GoodsShow('plan')" data-toggle="modal" data-target="#goods">
+                                        <div></div>
+                                        <p>添加计划商品</p>
+                                    </div>
+                                    <div class="plan-goods" v-else>
+                                        <div class="top">
+                                            <div>主要商品</div>
+                                            <div>价格</div>
+                                            <div>数量</div>
+                                            <div>总价</div>
+                                            <div>操作</div>
+                                        </div>
+                                        <div class="content" v-for="(data,index) in plan.plangoods.selectgoods">
+                                            <div>
+                                                <img src="../../image/goodsimg.png" alt=""/>
+                                                <div>
+                                                    <p>{{data.name}}</p>
+                                                    <span>规格：{{data.spec}}/{{plan.plangoods.number}}包/周</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p>￥{{data.price}}</p>
+                                            </div>
+                                            <div>
+                                                <input id="discount" type="number" v-model="plan.plangoods.number" @input="planprice" oninput="if(value<1)value=1;if(value>99)value=99 " :data-price="data.price"/>
+                                            </div>
+                                            <div id="plan-total">
+                                                <div>￥：</div>
+                                                <input>
+                                            </div>
+                                            <div>
+                                                <div @click="GoodsShow2('plan')" data-toggle="modal" data-target="#goods">更换商品</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="addpack-wrap">
+                                    <div class="addpack-list-wrap">
+                                        <div class="top" v-if="plan.addgoods.selectgoods.length>0">
+                                            <div>搭配增值包</div>
+                                            <div>排序</div>
+                                            <div>实际售价</div>
+                                            <div>操作</div>
+                                        </div>
+                                        <div class="content">
+                                            <div v-for="(data,index) in plan.addgoods.selectgoods" class="goods">
+                                                <div>
+                                                    <img src="../../image/goodsimg.png" alt=""/>
+                                                    <div>
+                                                        <p>{{data.name}}</p>
+                                                        <span>{{data.spec}}</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="up add" :class="{active:index>0}" @click="Up">上移</div>
+                                                    <div class="down add" :class="{active:index<plan.addgoods.selectgoods.length-1}" @click="Down">下移</div>
+                                                </div>
+                                                <div>
+                                                    <p>￥{{data.price}}</p>
+                                                </div>
+                                                <div>
+                                                    <div @click="GoodsShow2('add')" data-toggle="modal" data-target="#goods">更换</div>
+                                                    <div @click="Delete">删除</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="add-addpack" :class="{active:plan.addgoods.selectgoods.length >0}" @click="GoodsShow('add')" data-toggle="modal" data-target="#goods">
+                                        <div></div>
+                                        <p>添加增值包</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="detail">
+                            <p>详情描述</p>
+                            <div class="editor-wrap">
+                                <script id="editor" type="text/plain" style="width:1078px;height:500px;"></script>
+                            </div>
+                        </li>
+                        <li class="shop-classify">
+                            <p>店铺分类</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{plan.shop_classify}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in plan.shop_classifylist" @click="Select" :class="{active:data.name == plan.shop_classify}" :data-id="data.id">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <div class="title">
+                            <h3>2.物流信息&其它设置</h3>
+                        </div>
+                        <li class="express" id="express">
+                            <p>选择快递</p>
+                            <div class="radio-wrap" @click="Select2('express')" data-data="zto" :class="{active:plan.express == 'zto'}">
+                                <div class="radio">
+                                </div>
+                                <p>中通快递</p>
+                            </div>
+                            <div class="radio-wrap" @click="Select2('express')" data-data="sf" :class="{active:plan.express == 'sf'}">
+                                <div class="radio">
+                                </div>
+                                <p>顺丰速运（￥23.00元）</p>
+                            </div>
+                        </li>
+                        <li class="other">
+                            <p>其他设置</p>
+                            <div class="radio-wrap" @click="Select2('release')" data-data=1 :class="{active:plan.release ==1}">
+                                <div class="radio">
+                                </div>
+                                <p>立即发布</p>
+                            </div>
+                            <div class="radio-wrap" @click="Select2('release')" data-data=0 :class="{active:plan.release ==0}">
+                                <div class="radio">
+                                </div>
+                                <p>放入仓库</p>
+                            </div>
+                        </li>
+                    </div>
+                    <div class="addpack" v-show="type=='addpack'">
+                        <div class="title">
+                            <h3>1.商品基本信息设置</h3>
+                        </div>
+                        <li class="shop" id="shop">
+                            <p>所属店铺</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{addpack.shop}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in addpack.shoplist" @click="Select" :class="{active:data.id == addpack.shopid}" :data-id="data.id">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="type">
+                            <p>所属类目</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{addpack.category}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in addpack.categorylist" @click="Select" :class="{active:data.name == addpack.category}" :data-id="data.id">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="title">
+                            <p>标题</p>
+                            <input type="text" v-model="addpack.title" @input="TextInput" maxlength="60"/>
+                            <div class="count"><p><span>0</span>/60</p></div>
+                        </li>
+                        <li class="point">
+                            <p>卖点</p>
+                            <textarea name="" v-model="addpack.selling_point" @input="TextInput" maxlength="120"></textarea>
+                            <div class="count"><p><span>0</span>/120</p></div>
+                        </li>
+                        <li class="imgs">
+                            <p>图片设置</p>
+                            <div>
+                                <div>
+                                    <p>(产品头图，分辨率：210px*210px；容量不要太大。)</p>
+                                    <div class="imgup">
+                                        <input id="file3"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                        <img src="" alt=""/>
+                                        <div class="cover">
+                                            <p>重新上传</p>
+                                            <img src="../../image/close.png" alt="" class="close"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>(背景图片，分辨率：750px*438px；容量不要太大。)</p>
+                                    <div class="imgup">
+                                        <input id="file4"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                        <img src="" alt=""/>
+                                        <div class="cover">
+                                            <p>重新上传</p>
+                                            <img src="../../image/close.png" alt="" class="close"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="goods-setting">
+                            <p>商品设置</p>
+                            <div>
+                                <div class="plan-goods-wrap">
+                                    <div class="plan-goods">
+                                        <div class="top">
+                                            <div>增值包</div>
+                                            <div>总价</div>
+                                            <div>折扣</div>
+                                            <div>实际售价</div>
+                                        </div>
+                                        <div class="content">
+                                            <div>
+                                                <div>
+                                                    <p>{{addpack.title}}</p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p>￥{{addpack_plangoodsprice}}</p>
+                                            </div>
+                                            <div>
+                                                <input type="number" v-model="addpack.plangoods.discount" oninput="if(value>10)value=10;if(value<0)value=1"/>
+                                            </div>
+                                            <div>
+                                                <p>￥{{(addpack_plangoodsprice*addpack.plangoods.discount*0.1).toFixed(2)}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="addpack-wrap">
+                                    <div class="addpack-list-wrap">
+                                        <div class="top" v-if="addpack.addgoods.selectgoods.length>0">
+                                            <div>关联商品</div>
+                                            <div>排序</div>
+                                            <div>实际售价</div>
+                                            <div>操作</div>
+                                        </div>
+                                        <div class="content">
+                                            <div v-for="(data,index) in addpack.addgoods.selectgoods" class="goods">
+                                                <div>
+                                                    <img src="../../image/goodsimg.png" alt=""/>
+                                                    <div>
+                                                        <p>{{data.name}}</p>
+                                                        <span>{{data.spec}}</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="up add" :class="{active:index>0}" @click="Up">上移</div>
+                                                    <div class="down add" :class="{active:index<addpack.addgoods.selectgoods.length-1}" @click="Down">下移</div>
+                                                </div>
+                                                <div>
+                                                    <p>￥{{data.price}}</p>
+                                                </div>
+                                                <div>
+                                                    <div @click="GoodsShow2('add')" data-toggle="modal" data-target="#goods">更换</div>
+                                                    <div @click="Delete">删除</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="add-addpack" :class="{active:addpack.addgoods.selectgoods.length >0}" @click="GoodsShow('add')" data-toggle="modal" data-target="#goods">
+                                        <div></div>
+                                        <p>添加增值包</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="shop-classify">
+                            <p>店铺分类</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{addpack.shop_classify}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in addpack.shop_classifylist" @click="Select" :class="{active:data.name == addpack.shop_classify}" :data-id="data.id">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <div class="title">
+                            <h3>2.物流信息&其它设置</h3>
+                        </div>
+                        <li class="express" id="express">
+                            <p>选择快递</p>
+                            <div class="radio-wrap" @click="Select2('express')" data-data="zto" :class="{active:addpack.express == 'zto'}">
+                                <div class="radio">
+                                </div>
+                                <p>中通快递</p>
+                            </div>
+                            <div class="radio-wrap" @click="Select2('express')" data-data="sf" :class="{active:addpack.express == 'sf'}">
+                                <div class="radio">
+                                </div>
+                                <p>顺丰速运（￥23.00元）</p>
+                            </div>
+                        </li>
+                        <li class="other">
+                            <p>其他设置</p>
+                            <div class="radio-wrap" @click="Select2('release')" data-data=1 :class="{active:addpack.release ==1}">
+                                <div class="radio">
+                                </div>
+                                <p>立即发布</p>
+                            </div>
+                            <div class="radio-wrap" @click="Select2('release')" data-data=0 :class="{active:addpack.release ==0}">
+                                <div class="radio">
+                                </div>
+                                <p>放入仓库</p>
+                            </div>
+                        </li>
+                    </div>
+                    <div class="normal" v-show="type=='normal'">
+                        <div class="title">
+                            <h3>1.商品基本信息设置</h3>
+                        </div>
+                        <li class="shop" id="shop">
+                            <p>所属店铺</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{normal.shop}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in normal.shoplist" @click="Select" :class="{active:data.id == normal.shopid}">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="type">
+                            <p>所属类目</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{normal.category}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in normal.categorylist" @click="Select" :class="{active:data.name == normal.category}">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="title">
+                            <p>商品标题</p>
+                            <input type="text" v-model="normal.title" @input="TextInput" maxlength="60"/>
+                            <div class="count"><p><span>0</span>/60</p></div>
+                        </li>
+                        <li class="point">
+                            <p>商品卖点</p>
+                            <textarea name="" v-model="normal.selling_point" @input="TextInput" maxlength="120"></textarea>
+                            <div class="count"><p><span>0</span>/120</p></div>
+                        </li>
+                        <li class="imgs">
+                            <p>图片设置</p>
+                            <div>
+                                <div>
+                                    <p>(产品头图，分辨率：800px*800px；单张容量大小不要太大。)</p>
+                                    <div class="imgs">
+                                        <div class="imgup">
+                                            <input id="file5"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                            <img src="" alt=""/>
+                                            <div class="cover">
+                                                <p>重新上传</p>
+                                                <img src="../../image/close.png" alt="" class="close"/>
+                                            </div>
+                                        </div>
+                                        <div class="imgup">
+                                            <input id="file6"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                            <img src="" alt=""/>
+                                            <div class="cover">
+                                                <p>重新上传</p>
+                                                <img src="../../image/close.png" alt="" class="close"/>
+                                            </div>
+                                        </div>
+                                        <div class="imgup">
+                                            <input id="file7"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                            <img src="" alt=""/>
+                                            <div class="cover">
+                                                <p>重新上传</p>
+                                                <img src="../../image/close.png" alt="" class="close"/>
+                                            </div>
+                                        </div>
+                                        <div class="imgup">
+                                            <input id="file8"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                            <img src="" alt=""/>
+                                            <div class="cover">
+                                                <p>重新上传</p>
+                                                <img src="../../image/close.png" alt="" class="close"/>
+                                            </div>
+                                        </div>
+                                        <div class="imgup">
+                                            <input id="file9"  accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file"/>
+                                            <img src="" alt=""/>
+                                            <div class="cover">
+                                                <p>重新上传</p>
+                                                <img src="../../image/close.png" alt="" class="close"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="goods-spec">
+                            <p>选择规格</p>
+                            <div>
+                                <div class="top">
+                                    <p>（注：可多选）</p>
+                                    <div class="btn">
+                                        <div class="edit" v-if="normal.edit ==0" @click="SpecShow">编辑</div>
+                                        <div class="cancel" v-if="normal.edit==1" @click="SpecShow">取消</div>
+                                        <div class="confirm" v-if="normal.edit==1" @click="SubmitSpec">完成</div>
+                                    </div>
+                                </div>
+                                <div class="content">
+                                    <div class="radio-wrap"  v-for="(data,index) in normal.speclist" @click="SpectSelect" :class="{edit:normal.edit,active:data.select}" :data-id="data.id">
+                                        <div class="radio" @click="DeleteSpec"></div>
+                                        <input :value="data.name" :disabled="normal.edit==0" :class="{active:normal.edit==1}" @input="SpecInput">
+                                    </div>
+                                    <div class="radio-wrap add" v-if="normal.edit==1">
+                                        <div class="radio" @click="AddSpec"></div>
+                                        <input placeholder="添加规格"  class="active">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="goods-price">
+                            <p>价格数量</p>
+                            <div>
+                                <div class="top">
+                                    <div>规格</div>
+                                    <div>数量</div>
+                                    <div>价格</div>
+                                </div>
+                                <div class="content">
+                                    <div v-for="(data,index) in normal.selectlist">
+                                        <div>
+                                            {{data.name}}
+                                        </div>
+                                        <div>
+                                            <input type="number" v-model="data.number"/>
+                                        </div>
+                                        <div>
+                                            <p>￥：</p>
+                                            <input type="number" v-model="data.price"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="detail">
+                            <p>详情描述</p>
+                            <div class="editor-wrap">
+                                <script id="editor-normal" type="text/plain" style="width:1078px;height:500px;"></script>
+                            </div>
+                        </li>
+                        <li class="shop-classify">
+                            <p>店铺分类</p>
+                            <div class="menu-wrap" @click="MenuShow">
+                                <p>{{normal.shop_classify}}</p>
+                                <img src="../../image/next.png" alt=""/>
+                                <div class="menu">
+                                    <div v-for="data in normal.shop_classifylist" @click="Select" :class="{active:data.name == normal.shop_classify}" :data-id="data.id">{{data.name}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <div class="title">
+                            <h3>2.物流信息&其它设置</h3>
+                        </div>
+                        <li class="express" id="express">
+                            <p>选择快递</p>
+                            <div class="radio-wrap" @click="Select2('express')" data-data="zto" :class="{active:normal.express == 'zto'}">
+                                <div class="radio">
+                                </div>
+                                <p>中通快递</p>
+                            </div>
+                            <div class="radio-wrap" @click="Select2('express')" data-data="sf" :class="{active:normal.express == 'sf'}">
+                                <div class="radio">
+                                </div>
+                                <p>顺丰速运（￥23.00元）</p>
+                            </div>
+                        </li>
+                        <li class="other">
+                            <p>其他设置</p>
+                            <div class="radio-wrap" @click="Select2('release')" data-data=1 :class="{active:normal.release ==1}">
+                                <div class="radio">
+                                </div>
+                                <p>立即发布</p>
+                            </div>
+                            <div class="radio-wrap" @click="Select2('release')" data-data=0 :class="{active:normal.release ==0}">
+                                <div class="radio">
+                                </div>
+                                <p>放入仓库</p>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="goods" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" @click="Cancel">
+                <div class="modal-dialog" role="document" v-if="this[type].type==1 && type!='normal'" onclick="event.stopPropagation();">
+                    <div class="top">
+                        <div class="top-left">
+                            <img src="../../image/warning.png" alt=""/>
+
+                            <p v-if="!this[type].plangoods.multiselect">此区域只支持单选:</p>
+
+                            <p v-else>此区域可以多选和取消:</p>
+                        </div>
+                        <div>
+                            <h3>选择商品<span>（合计{{this[type].plangoods.goodslist.length}}种）</span></h3>
+                        </div>
+                        <div class="close">
+                            <p data-dismiss="modal" @click="Cancel">关闭</p>
+                        </div>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="content"  v-if="type=='plan'">
+                            <div class="content-top">
+                                <div>商品</div>
+                                <div>实际售价</div>
+                                <div>操作</div>
+                            </div>
+                            <li class="good" v-if="index>=(plan.plangoods.nowpage-1)*6 && index<plan.plangoods.nowpage*6" v-for="(data,index) in this[type].plangoods.goodslist"  :key="'plangood'+index">
+                                <div>
+                                    <img src="../../image/goodsimg.png" alt=""/>
+                                    <div>
+                                        <h4>{{data.name}}</h4>
+                                        <p>{{data.spec}}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>￥{{data.price}}</p>
+                                </div>
+                                <div>
+                                    <div v-if="!data.select" @click="SelectGoods(true)">选择</div>
+                                    <div v-else class="selected" @click="SelectGoods(false)" :class="{noedit:data.noedit}">已选择</div>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="content"  v-if="type=='addpack'">
+                            <div class="content-top">
+                                <div>商品</div>
+                                <div>实际售价</div>
+                                <div>操作</div>
+                            </div>
+                            <li class="good" v-if="index>=(addpack.plangoods.nowpage-1)*6 && index<addpack.plangoods.nowpage*6" v-for="(data,index) in this[type].plangoods.goodslist"  :key="'plangood'+index">
+                                <div>
+                                    <img src="../../image/goodsimg.png" alt=""/>
+                                    <div>
+                                        <h4>{{data.name}}</h4>
+                                        <p>{{data.spec}}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>￥{{data.price}}</p>
+                                </div>
+                                <div>
+                                    <div v-if="!data.select" @click="SelectGoods(true)">选择</div>
+                                    <div v-else class="selected" @click="SelectGoods(false)" :class="{noedit:data.noedit}">已选择</div>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="content-pages">
+                            <p>第 {{this[type].plangoods.nowpage}} 页，共 {{Pages}} 页，合计 {{this[type].plangoods.goodslist.length}} 条记录；每页显示 6 件商品</p>
+
+                            <div class="page-btn">
+                                <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                <div class="paging" v-if="type=='plan'">
+                                    <div v-for="index in Pages" :class="{active: index == plan.plangoods.nowpage}" @click="NowPage">{{index}}</div>
+                                </div>
+                                <div class="paging" v-else-if="type=='addpack'">
+                                    <div v-for="index in Pages" :class="{active: index == addpack.plangoods.nowpage}" @click="NowPage">{{index}}</div>
+                                </div>
+                                <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                            </div>
+                        </div>
+                        <div class="btns">
+                            <div class="cancel" data-dismiss="modal" @click="Cancel">取消</div>
+                            <div class="confirm" @click="Confirm" data-dismiss="modal">确定</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-dialog" role="document" v-else-if="this[type].type==2 && type!='normal'" onclick="event.stopPropagation();">
+                    <div class="top">
+                        <div class="top-left">
+                            <img src="../../image/warning.png" alt=""/>
+
+                            <p v-if="plan.addgoods.multiselect">此区域只支持单选:</p>
+
+                            <p v-else>此区域可以多选和取消:</p>
+                        </div>
+                        <div>
+                            <h3>选择商品<span>（合计{{this[type].addgoods.goodslist.length}}种）</span></h3>
+                        </div>
+                        <div class="close">
+                            <p data-dismiss="modal" @click="Cancel">关闭</p>
+                        </div>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="content" v-if="type=='plan'">
+                            <div class="content-top">
+                                <div>商品</div>
+                                <div>实际售价</div>
+                                <div>操作</div>
+                            </div>
+                            <li class="good" v-for="(data,index) in this[type].addgoods.goodslist" v-if="index>=(plan.addgoods.nowpage-1)*6 && index<plan.addgoods.nowpage*6" :key="'addgood'+index">
+                                <div>
+                                    <img src="../../image/goodsimg.png" alt=""/>
+                                    <div>
+                                        <h4>{{data.name}}</h4>
+                                        <p>{{data.spec}}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>￥{{data.price}}</p>
+                                </div>
+                                <div>
+                                    <div v-if="!data.select" @click="SelectGoods(true)">选择</div>
+                                    <div v-else class="selected" @click="SelectGoods(false)" :class="{noedit:data.noedit}">已选择</div>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="content" v-if="type=='addpack'">
+                            <div class="content-top">
+                                <div>商品</div>
+                                <div>实际售价</div>
+                                <div>操作</div>
+                            </div>
+                            <li class="good" v-for="(data,index) in this[type].addgoods.goodslist" v-if="index>=(addpack.addgoods.nowpage-1)*6 && index<addpack.addgoods.nowpage*6" :key="'addgood'+index">
+                                <div>
+                                    <img src="../../image/goodsimg.png" alt=""/>
+                                    <div>
+                                        <h4>{{data.name}}</h4>
+                                        <p>{{data.spec}}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>￥{{data.price}}</p>
+                                </div>
+                                <div>
+                                    <div v-if="!data.select" @click="SelectGoods(true)">选择</div>
+                                    <div v-else class="selected" @click="SelectGoods(false)" :class="{noedit:data.noedit}">已选择</div>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="content-pages">
+                            <p>第 {{this[type].addgoods.nowpage}} 页，共 {{Pages}} 页，合计 {{this[type].addgoods.goodslist.length}} 条记录；每页显示 6 件商品</p>
+
+                            <div class="page-btn">
+                                <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                <div class="paging" v-if="type=='plan'">
+                                    <div v-for="index in Pages" :class="{active: index == plan.addgoods.nowpage}" @click="NowPage">{{index}}</div>
+                                </div>
+                                <div class="paging" v-if="type=='addpack'">
+                                    <div v-for="index in Pages" :class="{active: index == addpack.addgoods.nowpage}" @click="NowPage">{{index}}</div>
+                                </div>
+                                <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                            </div>
+                        </div>
+                        <div class="btns">
+                            <div class="cancel" data-dismiss="modal" @click="Cancel">取消</div>
+                            <div class="confirm" @click="Confirm" data-dismiss="modal">确定</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    <div id="submit">提交</div>
+</div>
+<div id="footer-footer"></div>
+</body>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bootstrap.min.js"></script>
+<script src="../../script/goods-release.js"></script>
+<script src="../../script/time.js"></script>
+<script src="../../script/common.js"></script>
+</html>

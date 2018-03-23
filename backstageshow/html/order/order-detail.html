@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet" href="../../style/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-detail.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="cover1" class="pop">
+    <img src="../../image/wait.gif"/>
+</div>
+<div id="cover" class="pop">
+<div>
+    <div class="top">
+        <img src="../../image/warning_icon@20px.png"/>
+        <p v-if="status == 4">确定要撤销审批吗？</p>
+        <p v-else-if="status == 2">确定要追回计划吗？</p>
+        <p v-else-if="status == 6">确定要撤销追回吗？</p>
+        <p v-else-if="status == 'pause'">确定要暂停计划吗？</p>
+        <p v-else-if="status == 'continue'">确定要继续计划吗？</p>
+    </div>
+    <div class="bottom">
+        <div class="confirm" @click="Confirm">确定</div>
+        <div class="cancel" @click="Cancel">取消</div>
+    </div>
+</div>
+</div>
+<div id="deal">
+    <div class="deal" onclick="event.stopPropagation()">
+        <div class="address-wrap">
+            <li v-for="(data,index) in address_list" :class="{active:index == 0}" :data-id="data.id">
+                <div class="select"></div>
+                <div class="detail">
+                    <div class="top">
+                        <div class="user">
+                            <p class="name">{{data.username}}</p>
+                            <p class="number">{{data.phone}}</p>
+                        </div>
+                        <div class="edit" @click="AddressEdit">
+                            编辑
+                        </div>
+                    </div>
+                    <div class="address">
+                        {{data.addressdetail}}
+                    </div>
+                </div>
+            </li>
+            <div class="btns">
+                <div class="add-address" @click="EditShow(-1)">新增地址</div>
+            </div>
+            <div class="address-edit"  onclick="event.stopPropagation()">
+                <div class="name-wrap">
+                    <p>收件人：</p>
+                    <input type="text" class="edit_username" v-model="addressedit.address.username"/>
+                </div>
+                <div class="phone-wrap">
+                    <p>联系电话：</p>
+                    <input type="text" class="edit_phone" onkeyup="value=value.replace(/[^\d]/g,'') " v-model="addressedit.address.phone" maxlength="11"/>
+                    <p class="error">输入有误</p>
+                </div>
+                <div class="address-select-wrap">
+                    <div @click="MenuShow">
+                        <p>{{addressedit.list1_name}}</p><img src="../../image/pull-down.png"/>
+                        <div class="menu">
+                            <li @click="SelectCity" v-for="data in list1" :data-id="data.aid" :class="{active:data.aid ==addressedit.list1_id}">{{data.name}}</li>
+                        </div>
+                    </div>
+                    <div @click="MenuShow">
+                        <p>{{addressedit.list2_name}}</p><img src="../../image/pull-down.png"/>
+                        <div class="menu">
+                            <li @click="SelectCity" v-for="data in list2" :data-id="data.aid" :class="{active:data.aid ==addressedit.list2_id}">{{data.name}}</li>
+                        </div>
+                    </div>
+                    <div @click="MenuShow">
+                        <p>{{addressedit.list3_name}}</p><img src="../../image/pull-down.png"/>
+                        <div class="menu">
+                            <li @click="SelectCity" v-for="data in list3" :data-id="data.aid" :class="{active:data.aid ==addressedit.list3_id}">{{data.name}}</li>
+                        </div>
+                    </div>
+                </div>
+                <div class="addressdetail-wrap">
+                    <textarea class="addressdetail" maxlength="32" v-model="addressedit.address.addressdetail"></textarea>
+                    <p>详细地址：</p>
+                </div>
+                <div class="address-edit-btns">
+                    <div class="cancel" @click="AddressEditHide">取消</div>
+                    <div class="confirm" @click="SubmitAddressChange">确定</div>
+                </div>
+            </div>
+        </div>
+        <div class="goods">
+            <div v-for="(data,index) in list_select.goodslist">
+            <p class="goodsname">{{data.name}}</p>
+            <p class="goodsnum">X{{data.number}}</p>
+            </div>
+        </div>
+        <div class="cycle">
+            <p>{{list_select.week}}/{{weeks}}</p>
+            <p v-if="list_select.type== 1">购买</p>
+            <p v-else-if="list_select.type== 2">赠送</p>
+            <p v-else-if="list_select.type== 3">补发</p>
+            <p v-else-if="list_select.type== 4">补赠</p>
+            <p v-else-if="list_select.type== 5">合并</p>
+        </div>
+        <div class="time">
+            <div class="select-time" :limit_time="list_select.limit_time">
+                <img src="../../image/Date_icon@20px.png" alt=""/>
+                <p :y="sendtime.split('/')[0]" :m="sendtime.split('/')[1]" :d="sendtime.split('/')[2]">{{sendtime}}</p>
+            </div>
+        </div>
+        <div class='status'>
+            <img src="../../image/warning_icon@20px.png" alt=""/>
+            <p>挂起中</p>
+        </div>
+        <div class='cancel' @click="CancelDeal">
+            取消
+        </div>
+        <div class="confirm" @click="DealConfirm">
+            完成
+        </div>
+    </div>
+</div>
+<div id="header-header">
+    <sr :index="2" ref="ch"></sr>
+</div>
+<div id="body">
+
+    <div id="remarks-pop" @click="StopEvent">
+        <div class="triangle"></div>
+        <div id="remarks-content">
+            <li v-for="data in lis">
+                <div class="circle"></div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>{{data.name}}</h3>
+                            <span>{{data.time}}</span>
+                        </div>
+                        <p>订单备注</p>
+                    </div>
+                    <p>{{data.content}}</p>
+                </div>
+            </li>
+        </div>
+        <div id="remarks-bottom">
+            <textarea v-if="!show" name="remarks" id="remarks-text" v-model="remark_content"></textarea>
+            <div id="remarks-btns">
+                <div v-if="show" @click="OpenRemark" id="remarks-add">
+                    添加备注
+                </div>
+                <div v-else id="remarks-adding">
+                    <div></div>
+                    <div id="remarks-adding-btns">
+                        <div id="remarks-cancel" @click="OpenRemarks">取消</div>
+                        <div id="remarks-submit" @click="SubmitRemark">发布</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="body-nav">
+        <h3>当前位置：</h3>
+        <a href="order.html">所有订单</a>
+        <div class="src">
+            <img src="../../image/next.png" alt=""/>
+            <p>订单详情</p>
+        </div>
+    </div>
+    <div id="search-wrap">
+        <search-nav></search-nav>
+    </div>
+    <div id="order-detail-wrap">
+        <div id="order-detail">
+            <div id="order-detail-top">
+                <div>
+                    <img src="../../image/order.png" alt=""/>
+                    <h3 v-cloak>订单：#{{ordernum}}（<span v-if="status==1">已付款</span>
+                        <span v-else-if="status==2">未付款</span>
+                        <span v-else-if="status==3">暂停中</span>
+                        <span v-else-if="status==4">已完成</span>
+                        <span v-else-if="status==5">退款中</span>
+                        <span v-else-if="status==6">已退款</span>
+                        <span v-else-if="status==7">挂起</span>
+                        <span v-else-if="status==8">追回</span>）</h3>
+                </div>
+                <div class="order-detail-btn" data-toggle="modal" data-target="#service" onclick="service.type=1">
+                    申请退款
+                </div>
+
+            </div>
+            <div id="order-detail-bottom">
+                <div id="order-detail-info">
+                    <div>
+                        <p>收件人： <span v-cloak>{{username}}，{{phone}}，{{addressdetail}}</span></p>
+                    </div>
+                    <div>
+                        <div><p>购买方式：<span v-if="platform ==1" v-cloak>淘宝</span><span v-else-if="platform ==2" v-cloak>App</span><span v-else-if="platform ==3" v-cloak>微信</span></p></div>
+                        <div><p>购买时间：<span v-cloak>{{time}}</span></p></div>
+                        <div><p>店铺活动：<span v-cloak>{{activity?activity:"无"}}</span></p></div>
+                        <div><p>优惠券信息：<span v-cloak>{{discount?discount:"无"}}</span></p></div>
+                    </div>
+                    <div>
+                        <div><p>支付方式：<span v-cloak>{{paytype=="wx"?"微信":"支付宝"}}</span></p></div>
+                        <div><p>付款信息：<span v-cloak>￥{{price}}元</span></p></div>
+                        <div><p v-cloak>订单状态：
+                            <span v-if="status==1">已付款</span>
+                            <span v-else-if="status==2">未付款</span>
+                            <span v-else-if="status==3">暂停中</span>
+                            <span v-else-if="status==4">已完成</span>
+                            <span v-else-if="status==5">退款中</span>
+                            <span v-else-if="status==6">已退款</span>
+                            <span v-else-if="status==7">挂起</span>
+                            <span v-else-if="status==8">追回</span>
+                        </p></div>
+                        <div></div>
+                    </div>
+                </div>
+                <div id="order-detail-goods-title">
+                    <div>购买的商品</div>
+                    <div>属性</div>
+                    <div>单价</div>
+                    <div>数量</div>
+                    <div>周期</div>
+                </div>
+                <div id="order-detail-goods">
+                    <goods v-for="(data,index) in goods_list" :to="data" :key="index"  v-if="index < 3*page && index >= (page-1)*3"></goods>
+                </div>
+                <div id="order-detail-goods-bottom">
+                    <div>
+                        <p>第 <span>{{page}}</span> 页，共 <span>{{Pages}}</span> 页，合计 <span>{{goods_list.length}}</span> 种商品；</p>
+                    </div>
+                    <div>
+                        <div @click="PrePage">
+                            <img src="../../image/pre.png" alt=""/>
+                            <p>上一页</p>
+                        </div>
+                        <div @click="NextPage">
+                            <p>下一页</p>
+                            <img src="../../image/next.png" alt=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="order-record">
+            <div id="order-record-top">
+                <div id="order-remark-btn" class="active"><h3>备注记录</h3></div>
+                <div id="order-operation-btn"><h3>操作记录</h3></div>
+                <div id="order-record-top-slider"></div>
+            </div>
+            <div id="order-record-content">
+                <div id="order-remark" key="remark" v-if="show">
+                    <li-remark v-for="(data,index) in remark_list" :to ="data" :class="data.type" v-if="index < 4*remark_page && index >= (remark_page-1)*4"></li-remark>
+                </div>
+                <div id="order-operation" key="ope" v-else>
+                    <li-operation v-for="(data,index) in ope_list" :to="data"  :class="data.type" v-if="index < 5*ope_page && index >= (ope_page-1)*5"></li-operation>
+                </div>
+                <div id="order-content-bottom">
+                    <div v-if="show"><p>第 <span>{{remark_page}}</span> 页，共 <span>{{RemarkPages}}</span> 页</p></div>
+                    <div v-else><p>第 <span>{{ope_page}}</span> 页，共 <span>{{OpePages}}</span> 页</p></div>
+                    <div>
+                        <div @click="PrePage">
+                            <img src="../../image/pre1.png" alt=""/>
+                            <p>上一页</p>
+                        </div>
+                        <div @click="NextPage">
+                            <p>下一页</p>
+                            <img src="../../image/next1.png" alt=""/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="order-list-wrap">
+        <div id="order-list-title">
+            <div>
+                <img src="../../image/list.png" alt=""/>
+                <h3>订阅计划列表</h3>
+                <div class="active btn-all" data-type="100" @click="ChangeFrom($event)">
+                    <div class="select"></div>
+                    <h3>全部</h3>
+                </div>
+                <div data-type="1" @click="ChangeFrom($event)">
+                    <div class="select" ></div>
+                    <h3>购买</h3>
+                </div>
+                <div data-type="2" @click="ChangeFrom($event)">
+                    <div class="select" ></div>
+                    <h3>赠送</h3>
+                </div>
+                <div data-type="3" @click="ChangeFrom($event)">
+                    <div class="select" ></div>
+                    <h3>补发</h3>
+                </div>
+                <div data-type="4" @click="ChangeFrom($event)">
+                    <div class="select" ></div>
+                    <h3>补赠</h3>
+                </div>
+            </div>
+            <div id="order-list-title-btns">
+                <div class="time-change" data-toggle="modal" data-target="#time-change">发货调整</div>
+                <div class="give" data-toggle="modal" data-target="#service" @click="ReissueGift">补赠一周</div>
+                <div class="pause" v-if="status!=3" @click="PauseOrder">暂停发货</div>
+                <div class="recover" v-else-if="status==3" @click="ContinueOrder">恢复发货</div>
+            </div>
+        </div>
+        <div id="order-list-nav">
+            <div class="active status-btn" data-status="100" @click="ChangeStatus"><h3>全部 <span v-if="nownum>0">(<span>{{lis_all.length}}</span>)</span></h3></div>
+            <div class="status-btn" data-status="1" @click="ChangeStatus"><h3>待发出 <span v-if="Nosend">(<span>{{Nosend}}</span>)</span></h3></div>
+            <div class="status-btn" data-status="2" @click="ChangeStatus"><h3>已发货 <span v-if="Sended">(<span>{{Sended}}</span>)</span></h3></div>
+            <div class="status-btn" data-status="3" @click="ChangeStatus"><h3>已完成 <span v-if="Done">(<span>{{Done}}</span>)</span></h3></div>
+            <div class="status-btn approval" data-status="4" @click="ChangeStatus"><h3>审批中 <span v-if="Approval>0">(<span>{{Approval}}</span>)</span></h3></div>
+            <div class="status-btn hang" data-status="5" @click="ChangeStatus" ><h3>挂起 <span v-if="Hangs">(<span>{{Hangs}}</span>)</span></h3></div>
+            <div class="status-btn recover" data-status="6" @click="ChangeStatus" ><h3>追回 <span v-if="Recovers">(<span>{{Recovers}}</span>)</span></h3></div>
+        </div>
+        <div id="order-list">
+            <div id="order-list-top">
+                <div></div>
+                <div>用户</div>
+                <div>商品</div>
+                <div>周期/类型</div>
+                <div>配送时间</div>
+                <div>状态</div>
+                <div>发货单</div>
+                <div>备注</div>
+                <div>操作</div>
+            </div>
+            <div id="order-list-content">
+                <div id="incomplete">
+                    <li-plan v-for="(data,index) in lis" :weeks="weeks" :to = "data" :key="data.id+''"></li-plan>
+                </div>
+                <div class="completed-line" v-if="lis_done.length>0">
+                    <p>以下是已完成计划列表</p>
+                </div>
+                <li-plan v-for="data in lis_done" :weeks="weeks" :to = "data" :key="data.id+''"></li-plan>
+            </div>
+        </div>
+        <div id="paging">
+            <div>
+                <div class="left">
+                    <div class="all" @click="AllSelect">
+                        <div class="select"></div>
+                        <p>全选</p>
+                    </div>
+                    <div class="edit" @click="EditList" data-toggle="modal" v-if="select_status ==1 || select_status ==0" :data-target="list_select.length>1 ? '#edit':''">
+                        修改计划
+                    </div>
+                    <div class="merge" @click="MerGerList" data-toggle="modal" :data-target="list_select.length>1 ? '#merge':''"   v-if="select_status ==1 || select_status ==0">
+                        合并计划
+                    </div>
+                    <div class="recover" v-if="select_status ==2 || select_status ==0" @click="RecoverPlan">
+                        追回
+                    </div>
+                </div>
+                <div class="right">
+                    <p>第 <span>{{nowpage}}</span> 页，共 <span>{{Pages}}</span> 页，合计 <span>{{nownum}}</span> 条记录；每页显示</p>
+                    <div class="pages" data-page="100" @click="PageMenu">
+                        <p>{{showpages}}条</p>
+                        <div class="triangle"></div>
+                        <div class="menu">
+                            <div data-page="10" @click="ChangeShowPages">10条</div>
+                            <div data-page="20" @click="ChangeShowPages">20条</div>
+                            <div data-page="50" @click="ChangeShowPages">50条</div>
+                            <div data-page="100" @click="ChangeShowPages">100条</div>
+                            <div data-page="200" @click="ChangeShowPages">200条</div>
+                            <div class="nowpage" @click="ChangeShowPages">{{showpages}}条</div>
+                        </div>
+                    </div>
+                    <p>记录</p>
+                    <div class="page-btn">
+                        <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                        <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                        <div class="paging">
+                            <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6" :key="index">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                        </div>
+                        <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                        <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+
+<div class="modal fade" id="service" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="title">
+            <p></p>
+            <h3>申请售后</h3>
+            <p data-dismiss="modal">关闭</p>
+        </div>
+        <div class="service-wrap">
+            <div class="refund-wrap" v-if="type==1">
+                <div>
+                    <p>订阅周期：</p><span>{{refund.weeks}}周</span>
+                </div>
+                <div class="refund-type">
+                    <p>退款类型：</p>
+                    <div class="part" @click="RefundLevel('part')" :class="{active:refund.type=='part'}">
+                        <div class="radio"></div>
+                        <p>部分退款</p>
+                    </div>
+                    <div class="all" @click="RefundLevel('all')" :class="{active:refund.type=='all'}">
+                        <div class="radio"></div>
+                        <p>全额退款</p>
+                    </div>
+                </div>
+                <div class="refund-goods">
+                    <p>退款商品：</p>
+                    <div class="all" @click="RefundGoods('all')" :class="{active:refund.goodstype=='all'}">
+                        <div class="radio"></div>
+                        <p>全部</p>
+                    </div>
+                    <div class="plan" @click="RefundGoods('plan')" :class="{active:refund.goodstype=='all'||refund.goodstype=='plan'}">
+                        <div class="radio"></div>
+                        <p>计划商品</p>
+                    </div>
+                    <div class="addpack" @click="RefundGoods('addpack')" :class="{active:refund.goodstype=='all'||refund.goodstype=='addpack'}">
+                        <div class="radio"></div>
+                        <p>增值包</p>
+                    </div>
+                </div>
+                <div>
+                    <p>退款周期：</p><span>{{refund.select_weeks.length}}周</span>
+                </div>
+                <div class="cycle-wrap">
+                    <p></p>
+                    <div>
+                        <div class="cycle-week" v-for="(data,index) in refund.weeks" @click="RefundWeekSelect">
+                            <div class="select"></div>
+                            <p>{{index+1}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="refund-price">
+                    <p>退款金额</p>
+                    <input type="text" v-model="refund.price"/>
+                </div>
+                <div class="refund-describe">
+                    <p>退款描述</p>
+                    <textarea v-model="refund.description"></textarea>
+                </div>
+
+                <div class="bottom">
+                    <div class="cancel" data-dismiss="modal">取消</div>
+                    <div class="submit" @click="SubmitRefund">提交</div>
+                </div>
+            </div>
+            <div class="reissue-wrap" v-else-if="type==2">
+                <div>
+                    <p>补发周期：</p>
+                    <span>{{reissue.week}}周</span>
+                </div>
+                <div>
+                    <p>发货时间：</p>
+                    <div class="send-time-btn" @click="ReissueTimeBind">
+                        <img src="../../image/date.png" alt=""/>
+                        <p>2017/07/23</p>
+                    </div>
+                </div>
+                <div class="gift-type">
+                    <p>补发类型：</p>
+                    <div class="all" @click="ReissueType('all')" :class="{active:reissue.type=='all'}">
+                        <div class="radio"></div>
+                        <p>全部</p>
+                    </div>
+                    <div class="plan" @click="ReissueType('plan')" :class="{active:reissue.type=='all' ||reissue.type=='plan'}">
+                        <div class="radio"></div>
+                        <p>计划商品</p>
+                    </div>
+                    <div class="addpack" @click="ReissueType('addpack')" :class="{active:reissue.type=='all' ||reissue.type=='addpack'}">
+                        <div class="radio"></div>
+                        <p>增值包商品</p>
+                    </div>
+                </div>
+                <div class="gift-has">
+                    <p>有无赠品：</p>
+                    <div class="no" :class="{active:!reissue.gift}" @click="ReissueGift">
+                        <div class="radio"></div>
+                        <p>无</p>
+                    </div>
+                    <div class="have" :class="{active:reissue.gift}" @click="ReissueGift('has')">
+                        <div class="radio"></div>
+                        <p>有</p>
+                    </div>
+                </div>
+                <div class="gift" v-if="reissue.gift">
+                    <p>选择赠品：</p>
+                    <div>
+                        <div class="gift-wrap" v-if="reissue.goods.length>0">
+                            <div class="top">
+                                <div>商品</div>
+                                <div>价格</div>
+                                <div>数量</div>
+                                <div>操作</div>
+                            </div>
+                            <div class="content">
+                                <li v-for="(data,index) in reissue.goods" :data-index="index">
+                                    <div>
+                                        <img :src="data.img" alt=""/>
+                                        <div>
+                                            <p>{{data.name}}</p>
+                                            <span>规格：{{data.spec}}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p>￥{{(data.price*data.number).toFixed(2)}}</p>
+                                    </div>
+                                    <div>
+                                        <div class="number-wrap">
+                                            <div class="reduce" :class="{active:data.number>1}" @click="ReissueGoodsNumberChange">-</div>
+                                            <input class="number" type="number" oninput="if(value.length>2)value=value.slice(0,2)" v-model="data.number">
+                                            <div class="add active" @click="ReissueGoodsNumberChange('add')">+</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div @click="GoodsShow('single')" data-toggle="modal" data-target="#goods">更换</div>
+                                        <div @click="Delete">删除</div>
+                                    </div>
+                                </li>
+                            </div>
+                        </div>
+                        <div class="addgoods" data-toggle="modal" data-target="#goods" @click="GoodsShow('all')">
+                            <img src="../../image/addgoods.png" alt=""/>
+                            <p>添加商品</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="describe-wrap">
+                    <p>补发描述：</p>
+                    <textarea v-model="reissue.description"></textarea>
+                </div>
+                <div class="bottom">
+                    <div class="cancel" data-dismiss="modal">取消</div>
+                    <div class="submit" @click="SubmitReissue">提交</div>
+                </div>
+            </div>
+            <div class="reissuegift-wrap" v-else-if="type==3">
+                <div>
+                    <p>补赠周期：</p>
+                    <span>1周</span>
+                </div>
+                <div>
+                    <p>发货时间：</p>
+                    <div class="send-time-btn" @click="ReissueTimeBind">
+                        <img src="../../image/date.png" alt=""/>
+                        <p>2017/07/23</p>
+                    </div>
+                </div>
+                <div class="gift-type">
+                    <p>补赠类型：</p>
+                    <div class="all" @click="ReissueType('all')" :class="{active:reissuegift.type=='all'}">
+                        <div class="radio"></div>
+                        <p>全部</p>
+                    </div>
+                    <div class="plan" @click="ReissueType('plan')" :class="{active:reissuegift.type=='all' ||reissuegift.type=='plan'}">
+                        <div class="radio"></div>
+                        <p>计划商品</p>
+                    </div>
+                    <div class="addpack" @click="ReissueType('addpack')" :class="{active:reissuegift.type=='all' ||reissuegift.type=='addpack'}">
+                        <div class="radio"></div>
+                        <p>增值包商品</p>
+                    </div>
+                </div>
+                <div class="gift-has">
+                    <p>有无赠品：</p>
+                    <div class="no" :class="{active:!reissuegift.gift}" @click="ReissueGift">
+                        <div class="radio"></div>
+                        <p>无</p>
+                    </div>
+                    <div class="have" :class="{active:reissuegift.gift}" @click="ReissueGift('has')">
+                        <div class="radio"></div>
+                        <p>有</p>
+                    </div>
+                </div>
+                <div class="gift" v-if="reissuegift.gift">
+                    <p>选择赠品：</p>
+                    <div>
+                        <div class="gift-wrap" v-if="reissuegift.goods.length>0">
+                            <div class="top">
+                                <div>商品</div>
+                                <div>价格</div>
+                                <div>数量</div>
+                                <div>操作</div>
+                            </div>
+                            <div class="content">
+                                <li v-for="(data,index) in reissuegift.goods" :data-index="index">
+                                    <div>
+                                        <img :src="data.img" alt=""/>
+                                        <div>
+                                            <p>{{data.name}}</p>
+                                            <span>规格：{{data.spec}}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p>￥{{(data.price*data.number).toFixed(2)}}</p>
+                                    </div>
+                                    <div>
+                                        <div class="number-wrap">
+                                            <div class="reduce" :class="{active:data.number>1}" @click="ReissueGoodsNumberChange">-</div>
+                                            <input class="number" type="number" oninput="if(value.length>2)value=value.slice(0,2)" v-model="data.number">
+                                            <div class="add active" @click="ReissueGoodsNumberChange('add')">+</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div @click="GoodsShow('single')" data-toggle="modal" data-target="#goods">更换</div>
+                                        <div @click="Delete">删除</div>
+                                    </div>
+                                </li>
+                            </div>
+                        </div>
+                        <div class="addgoods" data-toggle="modal" data-target="#goods" @click="GoodsShow('all')">
+                            <img src="../../image/addgoods.png" alt=""/>
+                            <p>添加商品</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="describe-wrap">
+                    <p>补赠描述：</p>
+                    <textarea v-model="reissuegift.description"></textarea>
+                </div>
+                <div class="bottom">
+                    <div class="cancel" data-dismiss="modal">取消</div>
+                    <div class="submit" @click="SubmitReissueGift">提交</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="goods" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" @click="GoodsCancel">
+        <div class="modal-dialog" role="document" v-if="type ==2" onclick="event.stopPropagation()">
+            <div class="top">
+                <div class="top-left">
+                    <img src="../../image/warning.png" alt=""/>
+
+                    <p v-if="!addgoods.multiselect">此区域只支持单选:</p>
+                    <p v-else>此区域可以多选和取消:</p>
+                </div>
+                <div>
+                    <h3>选择商品<span>（合计{{addgoods.goodslist.length}}种）</span></h3>
+                </div>
+                <div class="close">
+                    <p @click="GoodsCancel">关闭</p>
+                </div>
+            </div>
+            <div class="content-wrap">
+                <div class="content">
+                    <div class="content-top">
+                        <div>商品</div>
+                        <div>实际售价</div>
+                        <div>操作</div>
+                    </div>
+                    <li class="good" v-for="(data,index) in addgoods.goodslist" v-if="index>=(addgoods.nowpage-1)*6 && index<addgoods.nowpage*6" :data-index="index">
+                    <div>
+                        <img src="../../image/goodsimg.png" alt=""/>
+                        <div>
+                            <h4>{{data.name}}</h4>
+                            <p>{{data.spec}}</p>
+                            </div>
+                        </div>
+                    <div>
+                        <p>￥{{data.price}}</p>
+                        </div>
+                    <div>
+                        <div v-if="!data.select"  @click="GoodsSelect">选择</div>
+                        <div v-else class="selected" :class="{noedit:data.noedit}" @click="GoodsSelect">已选择</div>
+                        </div>
+                    </li>
+                    <!--<goods v-for="(to,index) in renderlist" :data="to"></goods>-->
+                </div>
+                <div class="content-pages">
+                    <p>第 {{addgoods.nowpage}} 页，共 {{Pages}} 页，合计 {{addgoods.goodslist.length}} 条记录；每页显示 6 件商品</p>
+
+                    <div class="page-btn">
+                        <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                        <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                        <div class="paging">
+                            <div v-for="data in Pages" :class="{active: data == addgoods.nowpage}" @click="NowPage">{{data}}</div>
+                        </div>
+                        <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                        <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                    </div>
+                </div>
+                <div class="btns">
+                    <div class="cancel" @click="GoodsCancel">取消</div>
+                    <div class="confirm" @click="Confirm">确定</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-dialog" role="document" v-else-if="type ==3" onclick="event.stopPropagation()">
+            <div class="top">
+                <div class="top-left">
+                    <img src="../../image/warning.png" alt=""/>
+
+                    <p v-if="!addgoodsgift.multiselect">此区域只支持单选:</p>
+                    <p v-else>此区域可以多选和取消:</p>
+                </div>
+                <div>
+                    <h3>选择商品<span>（合计{{addgoodsgift.goodslist.length}}种）</span></h3>
+                </div>
+                <div class="close">
+                    <p @click="GoodsCancel">关闭</p>
+                </div>
+            </div>
+            <div class="content-wrap">
+                <div class="content">
+                    <div class="content-top">
+                        <div>商品</div>
+                        <div>实际售价</div>
+                        <div>操作</div>
+                    </div>
+                    <li class="good" v-for="(data,index) in addgoodsgift.goodslist" v-if="index>=(addgoodsgift.nowpage-1)*6 && index<addgoodsgift.nowpage*6" :data-index="index">
+                        <div>
+                            <img src="../../image/goodsimg.png" alt=""/>
+                            <div>
+                                <h4>{{data.name}}</h4>
+                                <p>{{data.spec}}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p>￥{{data.price}}</p>
+                        </div>
+                        <div>
+                            <div v-if="!data.select"  @click="GoodsSelect">选择</div>
+                            <div v-else class="selected" :class="{noedit:data.noedit}" @click="GoodsSelect">已选择</div>
+                        </div>
+                    </li>
+                    <!--<goods v-for="(to,index) in renderlist" :data="to"></goods>-->
+                </div>
+                <div class="content-pages">
+                    <p>第 {{addgoodsgift.nowpage}} 页，共 {{Pages}} 页，合计 {{addgoodsgift.goodslist.length}} 条记录；每页显示 6 件商品</p>
+
+                    <div class="page-btn">
+                        <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                        <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                        <div class="paging">
+                            <div v-for="data in Pages" :class="{active: data == addgoodsgift.nowpage}" @click="NowPage">{{data}}</div>
+                        </div>
+                        <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                        <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                    </div>
+                </div>
+                <div class="btns">
+                    <div class="cancel" @click="GoodsCancel">取消</div>
+                    <div class="confirm" @click="Confirm">确定</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="merge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" onclick="this.parentNode.click();">
+        <div class="content-wrap">
+            <div class="top">
+                <h3>合并计划</h3>
+            </div>
+            <div class="box">
+                <div class="title">
+                    <div><p>用户</p></div>
+                    <div><p>商品</p></div>
+                    <div><p>周期/类型</p></div>
+                    <div><p>配送时间</p></div>
+                    <div><p>状态</p></div>
+                    <div><p>发货单</p></div>
+                    <div><p>备注</p></div>
+                    <div><p>操作</p></div>
+                </div>
+                <div class="content">
+                    <div>
+                        <div class="address-wrap">
+                            <li v-for="(data,index) in address_list" :class="{active:index == 0}" :data-id="data.id">
+                                <div class="select"></div>
+                                <div class="detail">
+                                    <div class="top">
+                                        <div class="user">
+                                            <p class="name">{{data.username}}</p>
+                                            <p class="number">{{data.phone}}</p>
+                                        </div>
+                                        <div class="edit" @click="AddressEdit">
+                                            编辑
+                                        </div>
+                                    </div>
+                                    <div class="address">
+                                        {{data.addressdetail}}
+                                    </div>
+                                </div>
+                            </li>
+                            <div class="btns">
+                                <div class="add-address" @click="EditShow(-1)">新增地址</div>
+                            </div>
+                            <div class="address-edit"  onclick="event.stopPropagation()">
+                                <div class="name-wrap">
+                                    <p>收件人：</p>
+                                    <input type="text" class="edit_username" v-model="addressedit.address.username"/>
+                                </div>
+                                <div class="phone-wrap">
+                                    <p>联系电话：</p>
+                                    <input type="text" class="edit_phone" onkeyup="value=value.replace(/[^\d]/g,'') " v-model="addressedit.address.phone" maxlength="11"/>
+                                    <p class="error">输入有误</p>
+                                </div>
+                                <div class="address-select-wrap">
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list1_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list1" :data-id="data.aid" :class="{active:data.aid == addressedit.list1_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list2_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list2" :data-id="data.aid" :class="{active:data.aid == addressedit.list2_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list3_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list3" :data-id="data.aid" :class="{active:data.aid == addressedit.list3_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="addressdetail-wrap">
+                                    <textarea class="addressdetail" maxlength="32" v-model="addressedit.address.addressdetail"></textarea>
+                                    <p>详细地址：</p>
+                                </div>
+                                <div class="address-edit-btns">
+                                    <div class="cancel" @click="AddressEditHide">取消</div>
+                                    <div class="confirm" @click="SubmitAddressChange">确定</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select" class="goods" :class="{ more:data.goodslist.length>2}" :key="data.id+''">
+                            <div v-for="(dat,index) in data.goodslist" v-if="index<2">
+                                <p class="goodsname">{{dat.name}}</p>
+
+                                <p class="goodsnum">X{{dat.number}}</p>
+                            </div>
+                            <div class="menu">
+                                <div v-for="(dat,index) in data.goodslist">
+                                    <p class="goodsname">{{dat.name}}</p>
+
+                                    <p class="goodsnum">X{{dat.number}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p>{{data.week }}/{{weeks}}</p>
+                            <p v-if="data.type== 1">购买</p>
+                            <p v-else-if="data.type== 2">赠送</p>
+                            <p v-else-if="data.type== 3">补发</p>
+                            <p v-else-if="data.type== 4">补赠</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="select-time" :limit_time="limit_time">
+                            <img src="../../image/Date_icon@20px.png" alt=""/>
+                            <p :y="sendtime.split('/')[0]" :m="sendtime.split('/')[1]" :d="sendtime.split('/')[2]">{{sendtime}}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p v-if="data.status==1">待发出</p>
+                            <p v-else-if="data.status==2">已发货</p>
+                            <p v-else-if="data.status==3">已完成</p>
+                            <p v-else-if="data.status==4" style="color:#f76260">审批中</p>
+                            <p v-else-if="data.status==5" style="color:#f76260">挂起中</p>
+                            <p v-else-if="data.status==6" style="color:#f76260">追回中</p>
+                            <div v-if="data.expressnum&&data.expressname">'
+                                <p>{{data.expressname}}:</p>
+                                <a>{{data.expressnum}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p v-if="data.invoice == 1">已打印</p>
+                            <p v-else>未打印</p>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="../../image/prompt_icon@20px.png" alt=""/>
+                    </div>
+                    <div>
+                        <img src="../../image/prompt_icon@20px.png" alt=""/>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="btns">
+                        <div class="cancel" data-dismiss="merge" onclick="$('#merge').click()">取消</div>
+                        <div class="confirm" @click="MergeConfirm">确定合并</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="split" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" onclick="this.parentNode.click();">
+        <div class="content-wrap">
+            <div class="top">
+                <h3>拆分计划</h3>
+            </div>
+            <div class="box">
+                <div class="title">
+                    <div><p>用户</p></div>
+                    <div><p>商品</p></div>
+                    <div><p>周期/类型</p></div>
+                    <div><p>配送时间</p></div>
+                    <div><p>状态</p></div>
+                    <div><p>发货单</p></div>
+                    <div><p>备注</p></div>
+                    <div><p>操作</p></div>
+                </div>
+                <div class="content">
+                    <div>
+                        <div class="address-wrap" v-for="(data1,index) in address_list" :style="{zIndex:200-index}">
+                            <li v-for="(data,index) in data1" :class="{active:index == 0}" :data-id="data.id" >
+                                <div class="select"></div>
+                                <div class="detail">
+                                    <div class="top">
+                                        <div class="user">
+                                            <p class="name">{{data.username}}</p>
+                                            <p class="number">{{data.phone}}</p>
+                                        </div>
+                                        <div class="edit" @click="AddressEdit">
+                                            编辑
+                                        </div>
+                                    </div>
+                                    <div class="address">
+                                        {{data.addressdetail}}
+                                    </div>
+                                </div>
+                            </li>
+                            <div class="btns">
+                                <div class="add-address" @click="EditShow(-1)">新增地址</div>
+                            </div>
+                            <div class="address-edit"  onclick="event.stopPropagation()">
+                                <div class="name-wrap">
+                                    <p>收件人：</p>
+                                    <input type="text" class="edit_username" v-model="addressedit.address.username"/>
+                                </div>
+                                <div class="phone-wrap">
+                                    <p>联系电话：</p>
+                                    <input type="text" class="edit_phone" onkeyup="value=value.replace(/[^\d]/g,'') " v-model="addressedit.address.phone" maxlength="11"/>
+                                    <p class="error">输入有误</p>
+                                </div>
+                                <div class="address-select-wrap">
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list1_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list1" :data-id="data.aid" :class="{active:data.aid == addressedit.list1_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list2_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list2" :data-id="data.aid" :class="{active:data.aid == addressedit.list2_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list3_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list3" :data-id="data.aid" :class="{active:data.aid == addressedit.list3_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="addressdetail-wrap">
+                                    <textarea class="addressdetail" maxlength="32" v-model="addressedit.address.addressdetail"></textarea>
+                                    <p>详细地址：</p>
+                                </div>
+                                <div class="address-edit-btns">
+                                    <div class="cancel" @click="AddressEditHide">取消</div>
+                                    <div class="confirm" @click="SubmitAddressChange">确定</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select" class="goods" :class="{ more:data.goodslist.length>2}" :key="data.id+''">
+                            <div v-for="(dat,index) in data.goodslist" v-if="index<2">
+                                <p class="goodsname">{{dat.name}}</p>
+
+                                <p class="goodsnum">X{{dat.number}}</p>
+                            </div>
+                            <div class="menu">
+                                <div v-for="(dat,index) in data.goodslist">
+                                    <p class="goodsname">{{dat.name}}</p>
+
+                                    <p class="goodsnum">X{{dat.number}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p>{{data.week }}/{{weeks}}</p>
+                            <p v-if="data.type== 1">购买</p>
+                            <p v-else-if="data.type== 2">赠送</p>
+                            <p v-else-if="data.type== 3">补发</p>
+                            <p v-else-if="data.type== 4">补赠</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <div class="select-time" :limit_time="limit_time">
+                                <img src="../../image/Date_icon@20px.png" alt=""/>
+                                <p :y="y" :m="m" :d="d">{{sendtime}}</p>
+                            </div>
+                            <div class="select-spacing" @click="SpacingShow">
+                                <p>间隔：<span class="spacing">{{spacing}}</span>天</p>
+                                <div class="menu">
+                                    <div class="top">
+                                        <p>设置发货间隔(天)</p>
+                                        <div class="spacing-control" >
+                                            <div class="reduce" @click="ReduceSpacing" :class="{active:spacing>1}"></div>
+                                            <input class="spacing" type="number" oninput="if(value>30)value=30;if(value<1)value=1" v-model="spacing"/>
+                                            <div class="add" @click="AddSpacing" :class="{active:spacing<30}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="confirm" @click="SpacingConfirm">确定</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-for="(data,index) in address_list" v-if="index>0">
+                            自动生成
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p v-if="data.status==1">待发出</p>
+                            <p v-else-if="data.status==2">已发货</p>
+                            <p v-else-if="data.status==3">已完成</p>
+                            <p v-else-if="data.status==4" style="color:#f76260">审批中</p>
+                            <p v-else-if="data.status==5" style="color:#f76260">挂起中</p>
+                            <p v-else-if="data.status==6" style="color:#f76260">追回中</p>
+                            <div v-if="data.expressnum&&data.expressname">
+                                <p>{{data.expressname}}:</p>
+                                <a>{{data.expressnum}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p v-if="data.invoice == 1">已打印</p>
+                            <p v-else>未打印</p>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="../../image/prompt_icon@20px.png" alt=""/>
+                    </div>
+                    <div>
+                        <img src="../../image/prompt_icon@20px.png" alt=""/>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="btns">
+                        <div class="cancel" data-dismiss="merge" onclick="$('#split').click()">取消</div>
+                        <div class="confirm" @click="SplitConfirm">确定拆分</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" onclick="this.parentNode.click();">
+        <div class="content-wrap">
+            <div class="top">
+                <h3>计划调整</h3>
+            </div>
+            <div class="box">
+                <div class="title">
+                    <div><p>用户</p></div>
+                    <div><p>商品</p></div>
+                    <div><p>周期/类型</p></div>
+                    <div><p>配送时间</p></div>
+                    <div><p>状态</p></div>
+                </div>
+                <div class="content">
+                    <div>
+                        <div class="address-wrap" v-for="(data1,index) in address_list" :style="{zIndex:200-index}">
+                            <li v-for="(data,index) in data1" :class="{active:index == 0}" :data-id="data.id" >
+                                <div class="select"></div>
+                                <div class="detail">
+                                    <div class="top">
+                                        <div class="user">
+                                            <p class="name">{{data.username}}</p>
+                                            <p class="number">{{data.phone}}</p>
+                                        </div>
+                                        <div class="edit" @click="AddressEdit">
+                                            编辑
+                                        </div>
+                                    </div>
+                                    <div class="address">
+                                        {{data.addressdetail}}
+                                    </div>
+                                </div>
+                            </li>
+                            <div class="btns">
+                                <div class="add-address" @click="EditShow(-1)">新增地址</div>
+                            </div>
+                            <div class="address-edit"  onclick="event.stopPropagation()">
+                                <div class="name-wrap">
+                                    <p>收件人：</p>
+                                    <input type="text" class="edit_username" v-model="addressedit.address.username"/>
+                                </div>
+                                <div class="phone-wrap">
+                                    <p>联系电话：</p>
+                                    <input type="text" class="edit_phone" onkeyup="value=value.replace(/[^\d]/g,'') " v-model="addressedit.address.phone" maxlength="11"/>
+                                    <p class="error">输入有误</p>
+                                </div>
+                                <div class="address-select-wrap">
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list1_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list1" :data-id="data.aid" :class="{active:data.aid == addressedit.list1_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list2_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list2" :data-id="data.aid" :class="{active:data.aid == addressedit.list2_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                    <div @click="MenuShow">
+                                        <p>{{addressedit.list3_name}}</p><img src="../../image/pull-down.png"/>
+                                        <div class="menu">
+                                            <li @click="SelectCity" v-for="data in list3" :data-id="data.aid" :class="{active:data.aid == addressedit.list3_id}">{{data.name}}</li>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="addressdetail-wrap">
+                                    <textarea class="addressdetail" maxlength="32" v-model="addressedit.address.addressdetail"></textarea>
+                                    <p>详细地址：</p>
+                                </div>
+                                <div class="address-edit-btns">
+                                    <div class="cancel" @click="AddressEditHide">取消</div>
+                                    <div class="confirm" @click="SubmitAddressChange">确定</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goods-target">
+                        <div v-for="data in list_select" class="goods" :class="{ more:data.goodslist.length>2}" :key="data.id+''" @click="GoodsEditShow">
+                            <div>
+                                <div v-for="(dat,index) in data.goodslist" v-if="index<2">
+                                    <p class="goodsname">{{dat.name}}</p>
+
+                                    <p class="goodsnum">X{{dat.number}}</p>
+                                </div>
+                                <div class="menu" @click="GoodsEditShow">
+                                    <div v-for="(dat,index) in data.goodslist">
+                                        <p class="goodsname">{{dat.name}}</p>
+
+                                        <p class="goodsnum">X{{dat.number}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul id="goodsedit">
+                            <div class="pop">
+                                <div>
+                                    <div class="top">
+                                        <img src="../../image/warning_icon@20px.png"/>
+                                        <p>调整合并计划商品后不可再拆分该计划！</p>
+                                    </div>
+                                    <div class="bottom">
+                                        <div class="confirm" @click="Confirm">确定</div>
+                                        <div class="cancel" @click="ConfirmShow">取消</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="top">
+                                <p class="save" @click="Submit">保存</p>
+                                <h3>调整商品</h3>
+                                <p class="cancel" @click="EditHide">取消</p>
+                            </div>
+                            <div class="title">
+                                <div>周期/类型</div>
+                                <div>状态</div>
+                                <div class="goods-title" v-for="(data,index) in goodslist">{{data.name}}({{data.number}})</div>
+                            </div>
+                            <div class="content">
+                                <li v-for="(data,dataIndex) in weeksdetail" :class="{merger:data.type == 5,active:data.week==nowweek}" v-if="dataIndex<nowpage*8 &&dataIndex>=(nowpage-1)*8">
+                                    <div>
+                                        <p>{{data.week}}/{{weeks}}</p>
+                                        <p v-if="data.type== 1">购买</p>
+                                        <p v-else-if="data.type== 2">赠送</p>
+                                        <p v-else-if="data.type== 3">补发</p>
+                                        <p v-else-if="data.type== 4">补赠</p>
+                                        <p v-else-if="data.type== 5">合并</p>
+                                    </div>
+                                    <div>
+                                        <p v-if="data.status==1">待发出</p>
+                                        <p v-else-if="data.status==2">已发货</p>
+                                        <p v-else-if="data.status==3">已完成</p>
+                                        <p v-else-if="data.status==4" style="color:#f76260">审批中</p>
+                                        <p v-else-if="data.status==5" style="color:#f76260">挂起中</p>
+                                        <p v-else-if="data.status==6" style="color:#f76260">追回中</p>
+                                    </div>
+                                    <div class="goods-wrap" v-for="(da,index) in goodslist">
+                                        <div class="control" v-if="data.status== 1 && !data.reversible">
+                                            <div class="reduce" @click="GoodsReduce">-</div>
+                                            <input class="number" type="number" :data-goodsindex="index" :data-weekindex="dataIndex" oninput="if(value.length>2)value=value.slice(0,2);if(value<0)value=0" :value="numbercontrol[index].detail[dataIndex]">
+                                            <div class="add active" @click="GoodsAdd">+</div>
+                                        </div>
+                                        <div class="merger" v-else-if="data.status==1 &&data.type ==5 && data.reversible">
+                                            <div></div>
+                                            <div>{{numbercontrol[index].detail[dataIndex]}}</div>
+                                            <img @click="ConfirmShow" src="../../image/edit_icon@20px.png" alt=""/>
+                                        </div>
+                                        <div class="compeleted" v-else>
+                                            <div>{{numbercontrol[index].detail[dataIndex]}}</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </div>
+                            <div class="bottom">
+                                <p>每页显示<span>8个</span>计划</p>
+                                <div class="page-btn">
+                                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                    <div class="paging">
+                                        <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                                    </div>
+                                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p>{{data.week}}/{{weeks}}</p>
+                            <p v-if="data.type== 1">购买</p>
+                            <p v-else-if="data.type== 2">赠送</p>
+                            <p v-else-if="data.type== 3">补发</p>
+                            <p v-else-if="data.type== 4">补赠</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="(data,index) in list_select">
+                            <div class="select-time" :limit_time="data.limit_time">
+                                <img src="../../image/Date_icon@20px.png" alt=""/>
+                                <p :y="data.plan_time.split('/')[0]" :m="data.plan_time.split('/')[1]" :d="data.plan_time.split('/')[2]">{{data.plan_time}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <p v-if="data.status==1">待发出</p>
+                            <p v-else-if="data.status==2">已发货</p>
+                            <p v-else-if="data.status==3">已完成</p>
+                            <p v-else-if="data.status==4" style="color:#f76260">审批中</p>
+                            <p v-else-if="data.status==5" style="color:#f76260">挂起中</p>
+                            <p v-else-if="data.status==6" style="color:#f76260">追回中</p>
+                            <div v-if="data.expressnum&&data.expressname">
+                                <p>{{data.expressname}}:</p>
+                                <a>{{data.expressnum}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div v-for="data in list_select">
+                            <div @click="CancelWeekEdit">取消</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="btns">
+                        <div class="cancel" data-dismiss="edit" onclick="$('#edit').click()">取消</div>
+                        <div class="confirm" data-dismiss="edit" @click="ConfirmPlanEdit">确定修改</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="time-change" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" onclick="this.parentNode.click();">
+        <div class="content-wrap" onclick="event.stopPropagation()">
+            <div class="top">
+                <p></p>
+                <h3>调整发货时间</h3>
+                <p onclick="this.parentNode.parentNode.parentNode.click();">关闭</p>
+            </div>
+            <div class="content">
+                <p>设置时间：</p>
+                <div class="select-time" @click="TimeSelect">
+                    <span>选择时间</span>
+                    <p>{{sendtime}}</p>
+                </div>
+                <p>间隔时间：</p>
+                <div class="select-spacing" @click="SpacingShow">
+                    <p><span class="spacing">{{spacing}}</span>/天</p>
+                    <div class="menu">
+                        <div class="top">
+                            <p>设置发货间隔(天)</p>
+                            <div class="spacing-control">
+                                <div class="reduce" @click="ReduceSpacing" :class="{active:spacing>1}"></div>
+                                <input class="spacing" type="number" oninput="if(value>30)value=30;if(value<1)value=1" v-model="spacing"/>
+                                <div class="add" @click="AddSpacing" :class="{active:spacing<30}"></div>
+                            </div>
+                        </div>
+                        <div class="confirm" @click="SpacingConfirm">确定</div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="bottom">
+                    <div class="btns">
+                        <div class="cancel" data-dismiss="edit" onclick="$('#time-change').click()">取消</div>
+                        <div class="confirm" @click="Submit">确定</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/time.js"></script>
+<script src="../../script/order-common.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../res/city.js"></script>
+<script src="../../script/order-detail.js"></script>
+<script src="../../script/bootstrap.min.js"></script>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet" href="../../style/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/weixin.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="6" ref="ch"></sr>
+</div>
+<div id="wrap">
+    <div id="body">
+        <div class="main">
+            <div class="title">
+                <img src="../../image/wx_management_icon@30px.png"/>
+                <h3>微信管理</h3>
+                <div class="radio-circle-wrap" :class="{active:type=='comment'}" data-type="comment" @click="ChangeType('comment')">
+                    <div class="radio"></div>
+                    <p>评论管理</p>
+                </div>
+                <div class="radio-circle-wrap" :class="{active:type=='dogfood'}" data-type="dogfood" @click="ChangeType('dogfood')">
+                    <div class="radio"></div>
+                    <p>申请狗粮</p>
+                </div>
+                <div class="radio-circle-wrap" :class="{active:type=='friend'}" data-type="friend" @click="ChangeType('friend')">
+                    <div class="radio"></div>
+                    <p>朋友申请</p>
+                </div>
+            </div>
+            <div class="content-wrap">
+                <div class="comment" v-if="type=='comment'">
+                    <div class="nav">
+                        <div class="status" :class="{active:comment.status==1}" :data-status="1" @click="ChangeStatus(1)">
+                            <h3>正常显示</h3>
+                            <div></div>
+                        </div>
+                        <div class="status" :class="{active:comment.status==2}" :data-status="2" @click="ChangeStatus(2)">
+                            <h3>已经隐藏</h3>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="main-wrap">
+                            <div class="title">
+                                <div></div>
+                                <div><h3>评论内容</h3></div>
+                                <div><h3>用户</h3></div>
+                                <div><h3>发表时间</h3></div>
+                                <div><h3>显示状态</h3></div>
+                                <div><h3>显示控制</h3></div>
+                                <div><h3>操作</h3></div>
+                            </div>
+                            <ul>
+                                <li v-for="(data,index) in comment.list" v-if="data.status ==comment.status">
+                                    <div @click="Select(index)">
+                                        <div class="select" :class="{active:data.select}">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div :title="data.comment">
+                                            <div v-if="data.imgs.length>0" @click="ImageCheck(index)">
+                                                <img src="../../image/link.png"/><h3>查看截图</h3>
+                                            </div>
+                                            {{data.comment}}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {{data.username}}
+                                    </div>
+                                    <div>
+                                        {{data.time}}
+                                    </div>
+                                    <div>
+                                        {{data.status==1?"正常显示":"已经隐藏"}}
+                                    </div>
+                                    <div>
+                                        <div v-if="data.status==1" class="tohidden" @click="Hide(index)">隐藏</div>
+                                        <div v-else class="show" @click="Show(index)">显示</div>
+                                    </div>
+                                    <div>
+                                        <div data-target="#edit" data-toggle="modal" @click="Edit(index)">编辑</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content-bottom">
+                            <div class="control">
+                                <div class="radio-wrap" @click="AllSelect" :class="{active:allselect==1}">
+                                    <div class="radio"></div>
+                                    <p>全选</p>
+                                </div>
+                                <div class="delete" @click="Delete">删除</div>
+                            </div>
+                            <div class="limit-paging">
+                                <div class="paging">
+                                    <p>第<span>{{comment.nowpage}}</span>页，共<span>{{Pages}}</span>页，合计<span>{{comment.allnum}}</span>条记录；每页显示</p>
+                                    <div class="pages" data-page="100" @click="PageMenu">
+                                        <p>{{comment.showpages}}条</p>
+                                        <div class="triangle"></div>
+                                        <div class="menu">
+                                            <div data-page="10" @click="ChangeShowPages">10条</div>
+                                            <div data-page="20" @click="ChangeShowPages">20条</div>
+                                            <div data-page="50" @click="ChangeShowPages">50条</div>
+                                            <div data-page="100" @click="ChangeShowPages">100条</div>
+                                            <div data-page="200" @click="ChangeShowPages">200条</div>
+                                            <div class="nowpage" @click="ChangeShowPages">{{comment.showpages}}条</div>
+                                        </div>
+                                    </div>
+                                    <p>记录</p>
+                                </div>
+                                <div class="page-btn">
+                                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                    <div class="paging">
+                                        <div v-for="index in Pages" :class="{active: index+MiddlePages == comment.nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                                    </div>
+                                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="dogfood" v-else-if="type=='dogfood'">
+                    <div class="nav">
+                        <div class="status" :class="{active:dogfood.status==1}" :data-status="1" @click="ChangeStatus(1)">
+                            <h3>待审核</h3>
+                            <div></div>
+                        </div>
+                        <div class="status" :class="{active:dogfood.status==2}" :data-status="2" @click="ChangeStatus(2)">
+                            <h3>已通过</h3>
+                            <div></div>
+                        </div>
+                        <div class="status" :class="{active:dogfood.status==3}" :data-status="3" @click="ChangeStatus(3)">
+                            <h3>已拒绝</h3>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="main-wrap">
+                            <div class="title">
+                                <div></div>
+                                <div><p>申请人信息</p></div>
+                                <div><p>申请说明</p></div>
+                                <div><p>申请时间</p></div>
+                                <div><p>申请类型</p></div>
+                                <div><p>状态</p></div>
+                                <div><p>通过/申请次数</p></div>
+                                <div><p>操作</p></div>
+                            </div>
+                            <ul>
+                                <li v-for="(data,index) in dogfood.list" v-if="data.status ==dogfood.status">
+                                    <div @click="Select(index)">
+                                        <div class="select" :class="{active:data.select}">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <p><span>{{data.username}}</span> {{data.phone}}</p>
+                                        </div>
+                                        <div>{{data.addressdetail}}</div>
+                                    </div>
+                                    <div>
+                                        <div :title="data.comment">
+                                            <div v-if="data.imgs.length>0" @click="ImageCheck(index)">
+                                                <img src="../../image/link.png"/><h3>查看截图</h3>
+                                            </div>
+                                            {{data.comment}}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {{data.time}}
+                                    </div>
+                                    <div>
+                                        <p v-if="data.type==1">领养代替购买</p>
+                                        <p v-else-if="data.type==2">公益活动赞助</p>
+
+                                    </div>
+                                    <div>
+                                        <div v-if="data.status==1">待审核</div>
+                                        <div v-else-if="data.status==2">已通过</div>
+                                        <div v-else-if="data.status==3">已拒绝</div>
+                                    </div>
+                                    <div>
+                                        {{data.successtimes}}/{{data.applytimes}}
+                                    </div>
+                                    <div v-if="data.status==1">
+                                        <div class="approve" @click="Approve(index)">通过</div>
+                                        <div class="refuse" @click="Refuse(index)">拒绝</div>
+                                    </div>
+                                    <div v-else-if="data.status==2">
+                                        <img src="../../image/Done@20px.png"/>
+                                        <p>已通过</p>
+                                    </div>
+                                    <div v-else-if="data.status==3">
+                                        <img src="../../image/unpaid_icon@20px.png"/>
+                                        <p>未通过</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content-bottom">
+                            <div class="control">
+                                <div class="radio-wrap" @click="AllSelect" :class="{active:allselect==1}">
+                                    <div class="radio"></div>
+                                    <p>全选</p>
+                                </div>
+                                <div class="delete" @click="Delete">删除</div>
+                            </div>
+                            <div class="limit-paging">
+                                <div class="paging">
+                                    <p>第<span>{{dogfood.nowpage}}</span>页，共<span>{{Pages}}</span>页，合计<span>{{dogfood.allnum}}</span>条记录；每页显示</p>
+                                    <div class="pages" data-page="100" @click="PageMenu">
+                                        <p>{{dogfood.showpages}}条</p>
+                                        <div class="triangle"></div>
+                                        <div class="menu">
+                                            <div data-page="10" @click="ChangeShowPages">10条</div>
+                                            <div data-page="20" @click="ChangeShowPages">20条</div>
+                                            <div data-page="50" @click="ChangeShowPages">50条</div>
+                                            <div data-page="100" @click="ChangeShowPages">100条</div>
+                                            <div data-page="200" @click="ChangeShowPages">200条</div>
+                                            <div class="nowpage" @click="ChangeShowPages">{{dogfood.showpages}}条</div>
+                                        </div>
+                                    </div>
+                                    <p>记录</p>
+                                </div>
+                                <div class="page-btn">
+                                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                    <div class="paging">
+                                        <div v-for="index in Pages" :class="{active: index+MiddlePages == dogfood.nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                                    </div>
+                                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="friend" v-else-if="type=='friend'">
+                    <div class="nav">
+                        <div class="status" :class="{active:friend.status==1}" :data-status="1" @click="ChangeStatus(1)">
+                            <h3>待审核</h3>
+                            <div></div>
+                        </div>
+                        <div class="status" :class="{active:friend.status==2}" :data-status="2" @click="ChangeStatus(2)">
+                            <h3>已通过</h3>
+                            <div></div>
+                        </div>
+                        <div class="status" :class="{active:friend.status==3}" :data-status="3" @click="ChangeStatus(3)">
+                            <h3>已拒绝</h3>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="main-wrap">
+                            <div class="title">
+                                <div></div>
+                                <div><p>申请人信息</p></div>
+                                <div><p>申请说明</p></div>
+                                <div><p>申请时间</p></div>
+                                <div><p>申请类型</p></div>
+                                <div><p>状态</p></div>
+                                <div><p>通过/申请次数</p></div>
+                                <div><p>操作</p></div>
+                            </div>
+                            <ul>
+                                <li v-for="(data,index) in friend.list" v-if="data.status ==friend.status">
+                                    <div @click="Select(index)">
+                                        <div class="select" :class="{active:data.select}">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <p><span>{{data.username}}</span> {{data.phone}}</p>
+                                        </div>
+                                        <div>{{data.addressdetail}}</div>
+                                    </div>
+                                    <div>
+                                        <div :title="data.comment">
+                                            <div v-if="data.imgs.length>0" @click="ImageCheck(index)">
+                                                <img src="../../image/link.png"/><h3>查看截图</h3>
+                                            </div>
+                                            {{data.comment?data.comment:'--'}}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {{data.time}}
+                                    </div>
+                                    <div>
+                                        好友申请
+                                    </div>
+                                    <div>
+                                        <div v-if="data.status==1">待审核</div>
+                                        <div v-else-if="data.status==2">已通过</div>
+                                        <div v-else-if="data.status==3">已拒绝</div>
+                                    </div>
+                                    <div>
+                                        {{data.successtimes}}/{{data.applytimes}}
+                                    </div>
+                                    <div v-if="data.status==1">
+                                        <div class="approve" @click="Approve(index)">通过</div>
+                                        <div class="refuse" @click="Refuse(index)">拒绝</div>
+                                    </div>
+                                    <div v-else-if="data.status==2">
+                                        <img src="../../image/Done@20px.png"/>
+                                        <p>已通过</p>
+                                    </div>
+                                    <div v-else-if="data.status==3">
+                                        <img src="../../image/unpaid_icon@20px.png"/>
+                                        <p>未通过</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content-bottom">
+                            <div class="control">
+                                <div class="radio-wrap" @click="AllSelect" :class="{active:allselect==1}">
+                                    <div class="radio"></div>
+                                    <p>全选</p>
+                                </div>
+                                <div class="delete" @click="Delete">删除</div>
+                            </div>
+                            <div class="limit-paging">
+                                <div class="paging">
+                                    <p>第<span>{{friend.nowpage}}</span>页，共<span>{{Pages}}</span>页，合计<span>{{friend.allnum}}</span>条记录；每页显示</p>
+                                    <div class="pages" data-page="100" @click="PageMenu">
+                                        <p>{{friend.showpages}}条</p>
+                                        <div class="triangle"></div>
+                                        <div class="menu">
+                                            <div data-page="10" @click="ChangeShowPages">10条</div>
+                                            <div data-page="20" @click="ChangeShowPages">20条</div>
+                                            <div data-page="50" @click="ChangeShowPages">50条</div>
+                                            <div data-page="100" @click="ChangeShowPages">100条</div>
+                                            <div data-page="200" @click="ChangeShowPages">200条</div>
+                                            <div class="nowpage" @click="ChangeShowPages">{{friend.showpages}}条</div>
+                                        </div>
+                                    </div>
+                                    <p>记录</p>
+                                </div>
+                                <div class="page-btn">
+                                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                    <div class="paging">
+                                        <div v-for="index in Pages" :class="{active: index+MiddlePages == friend.nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                                    </div>
+                                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer-footer">
+        <footer-common></footer-common>
+    </div>
+</div>
+<div id="cover">
+    <div class="wrap">
+        <div class="top">
+            <h3>查看截图</h3><p v-if="imgs.length>1">（<span>{{now+1}}</span>/{{imgs.length}}）</p>
+            <div @click="Close">关闭</div>
+        </div>
+        <div class="content" :class="{active:imgs.length>1}">
+            <div class="imgwrap" v-for="(data,index) in imgs" :key="index" v-if="index == now">
+                <img :src="data.url"/>
+                <a :href="data.url" target="_blank">查看原图</a>
+            </div>
+            <div class="pre" :class="{active:now>0}" @click="Pre"></div>
+            <div class="next" :class="{active:imgs.length>1&&now<imgs.length-1}" @click="Next"></div>
+        </div>
+    </div>
+</div>
+<div id="cover2" class="pop">
+    <div>
+        <div class="top">
+            <img src="../../image/warning_icon@20px.png"/>
+            <p v-if="type==1">确定要隐藏该评论吗？</p>
+            <p v-else-if="type==2">确定要显示该评论吗？</p>
+            <p v-else-if="type==3">确定要删除评论吗？</p>
+            <p v-else-if="type==4">确定要删除申请吗？</p>
+            <p v-else-if="type==5||type==7">确定要同意申请吗？</p>
+            <p v-else-if="type==6||type==8">确定要拒绝申请吗？</p>
+        </div>
+        <div class="bottom">
+            <div class="confirm" @click="Confirm">确定</div>
+            <div class="cancel" @click="Cancel">取消</div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit" role="dialog" aria-labelledby="myModalLabel" >
+    <div class="modal-dialog" role="document" onclick="this.parentNode.click()">
+        <div class="wrap" onclick="event.stopPropagation()">
+            <div class="top">
+                <h3>编辑</h3>
+                <p onclick="this.parentNode.parentNode.parentNode.click()">关闭</p>
+            </div>
+            <div class="content">
+                <div class="user-info-wrap">
+                    <div class="user-info">
+                        <div>
+                            <p>用户昵称：</p>
+                            <input type="text" v-model="username"/>
+                        </div>
+                        <div>
+                            <p>发表时间：</p>
+                            <input class="time" type="text" v-model="time" readonly="readonly" :y="y" :m="m" :d="d" :h="h" :n="n" :s="s"/>
+                        </div>
+                    </div>
+                    <div class="user-img">
+                        <p>用户头像:</p>
+                        <div class="imgup">
+                            <input accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file" @change="Change('userimg')"/>
+                            <img :src="userimg" v-if="userimg"/>
+                            <div class="cover" :class="{active:userimg}">
+                                <p>重新上传</p>
+                                <img src="../../image/close.png" alt="" class="close" @click="Clear('userimg')"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-comment">
+                    <p>评论内容:</p>
+                    <textarea type="text" v-model="comment" maxlength="150"></textarea>
+                </div>
+                <div class="imgs-wrap">
+                    <p>评论图片:</p>
+                    <div>
+                        <div class="imgup" v-for="(data,index) in imgs">
+                            <input accept="image/jp2,image/jpeg,image/jpeg,image/jpeg,image/gif,image/png" type="file" @change="Change('imgs',index)"/>
+                            <img :src="data.url" v-if="data"/>
+                            <div class="cover" :class="{active:data.url && data.url!=' '}">
+                                <p>重新上传</p>
+                                <img src="../../image/close.png" alt="" class="close" @click="Clear('imgs',index)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btns">
+                    <div class="cancel" @click="Cancel">取消</div>
+                    <div class="submit" @click="Submit">确定</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bootstrap.min.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/weixin.js"></script>
+<script src="../../script/time.js"></script>
+</html>

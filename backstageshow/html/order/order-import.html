@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet" href="../../style/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-import.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="2" ref="ch"></sr>
+</div>
+    <div id="body">
+
+        <div id="main">
+
+            <div id="main-left">
+                <div id="notice">
+                    <div id="notice-top">
+                        <img src="../../image/me_icon@30px.png"/>
+                        <h3>添加订单须知</h3>
+                    </div>
+                    <div id="notice-content">
+                        <h3>1.添加订单须知：</h3>
+                        <div>
+                            <p>1.</p>
+                            <p>删除软件及其副本上关于著作权的信息；</p>
+                        </div>
+                        <div>
+                            <p>2.</p>
+                            <p>对软件进行反向工程、反向汇</p>
+                        </div>
+                        <div>
+                            <p>3.</p>
+                            <p>对小黑拥有知识产权的内容进行使用、出租、出借、复制、修改、链接、转载、汇编、发表、出版、建立镜像站点等； </p>
+                        </div>
+                        <h3>2.添加订单须知：</h3>
+                        <div>
+                            <p>1.</p>
+                            <p>对软件或者软件运行过程中释放到任何终端内存中的数据、软件运行过程中客户端与服务器端的交互数据，以及软件运行所必需的系统数据，进行复制、修改、增加、删除、挂接运行系统；</p>
+                        </div>
+                        <div>
+                            <p>2.</p>
+                            <p>通过修改或伪造软件运行中</p>
+                        </div>
+                        <div>
+                            <p>3.</p>
+                            <p>通过非小黑开发、授权的第三方软件、插件、外挂、系统，登录</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="main-right">
+                <div class="modal fade" id="goods" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" @click="Cancel">
+                    <div class="modal-dialog" role="document" v-if="type==1" onclick="event.stopPropagation();">
+                        <div class="top">
+                            <div class="top-left">
+                                <img src="../../image/warning.png" alt=""/>
+
+                                <p v-if="!plangoods_list.multiselect">此区域只支持单选:</p>
+
+                                <p v-else>此区域可以多选和取消:</p>
+                            </div>
+                            <div>
+                                <h3>选择商品<span>（合计{{plangoods_list.goodslist.length}}种）</span></h3>
+                            </div>
+                            <div class="close">
+                                <p data-dismiss="modal" @click="Cancel">关闭</p>
+                            </div>
+                        </div>
+                        <div class="content-wrap">
+                            <div class="content">
+                                <div class="content-top">
+                                    <div>商品</div>
+                                    <div>实际售价</div>
+                                    <div>操作</div>
+                                </div>
+                                <li class="good" v-for="(data,index) in plangoods_list.goodslist" v-if="index>=(plangoods_list.nowpage-1)*6 && index<plangoods_list.nowpage*6" :key="'plangood'+index">
+                                    <div>
+                                        <img src="../../image/goodsimg.png" alt=""/>
+                                        <div>
+                                            <h4>{{data.name}}</h4>
+                                            <p>{{data.spec}}</p>
+                                            </div>
+                                        </div>
+                                    <div>
+                                        <p>￥{{data.price}}</p>
+                                        </div>
+                                    <div>
+                                        <div v-if="!data.select" @click="Select(true)">选择</div>
+                                        <div v-else class="selected" @click="Select(false)" :class="{noedit:data.noedit}">已选择</div>
+                                    </div>
+                                </li>
+                            </div>
+                            <div class="content-pages">
+                                <p>第 {{plangoods_list.nowpage}} 页，共 {{Pages}} 页，合计 {{plangoods_list.goodslist.length}} 条记录；每页显示 6 件商品</p>
+
+                                <div class="page-btn">
+                                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                    <div class="paging">
+                                        <div v-for="index in Pages" :class="{active: index == plangoods_list.nowpage}" @click="NowPage">{{index}}</div>
+                                    </div>
+                                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                                </div>
+                            </div>
+                            <div class="btns">
+                                <div class="cancel" data-dismiss="modal" @click="Cancel">取消</div>
+                                <div class="confirm" @click="Confirm" data-dismiss="modal">确定</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-dialog" role="document" v-else-if="type==2" onclick="event.stopPropagation();">
+                        <div class="top">
+                            <div class="top-left">
+                                <img src="../../image/warning.png" alt=""/>
+
+                                <p v-if="addgoods_list.multiselect">此区域只支持单选:</p>
+
+                                <p v-else>此区域可以多选和取消:</p>
+                            </div>
+                            <div>
+                                <h3>选择商品<span>（合计{{addgoods_list.goodslist.length}}种）</span></h3>
+                            </div>
+                            <div class="close">
+                                <p data-dismiss="modal" @click="Cancel">关闭</p>
+                            </div>
+                        </div>
+                        <div class="content-wrap">
+                            <div class="content">
+                                <div class="content-top">
+                                    <div>商品</div>
+                                    <div>实际售价</div>
+                                    <div>操作</div>
+                                </div>
+                                <li class="good" v-for="(data,index) in addgoods_list.goodslist" v-if="index>=(addgoods_list.nowpage-1)*6 && index<addgoods_list.nowpage*6" :key="'addgood'+index">
+                                    <div>
+                                        <img src="../../image/goodsimg.png" alt=""/>
+                                        <div>
+                                            <h4>{{data.name}}</h4>
+                                            <p>{{data.spec}}</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p>￥{{data.price}}</p>
+                                    </div>
+                                    <div>
+                                        <div v-if="!data.select" @click="Select(true)">选择</div>
+                                        <div v-else class="selected" @click="Select(false)" :class="{noedit:data.noedit}">已选择</div>
+                                    </div>
+                                </li>
+                            </div>
+                            <div class="content-pages">
+                                <p>第 {{addgoods_list.nowpage}} 页，共 {{Pages}} 页，合计 {{addgoods_list.goodslist.length}} 条记录；每页显示 6 件商品</p>
+
+                                <div class="page-btn">
+                                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                                    <div class="paging">
+                                        <div v-for="index in Pages" :class="{active: index == addgoods_list.nowpage}" @click="NowPage">{{index}}</div>
+                                    </div>
+                                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                                </div>
+                            </div>
+                            <div class="btns">
+                                <div class="cancel" data-dismiss="modal" @click="Cancel">取消</div>
+                                <div class="confirm" @click="Confirm" data-dismiss="modal">确定</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="body-nav">
+                    <h3>当前位置：</h3>
+                    <a href="order.html">所有订单</a>
+                    <div class="src">
+                        <img src="../../image/next.png" alt=""/>
+                        <p>导入订单</p>
+                    </div>
+                </div>
+                <div class="main-right">
+                    <div class="top">
+                        <h3>导入订单</h3>
+                    </div>
+                    <div class="main">
+                        <h3 class="title">1.订单基本信息</h3>
+                        <div class="from">
+                            <p>订单来源</p>
+                            <div>
+                                <div class="radio"></div>
+                                <h3>淘宝</h3>
+                            </div>
+                            <div>
+                                <div class="radio"></div>
+                                <h3>App</h3>
+                            </div>
+                            <div>
+                                <div class="radio"></div>
+                                <h3>微信</h3>
+                            </div>
+                            <div>
+                                <div class="radio"></div>
+                                <h3>线下</h3>
+                            </div>
+                        </div>
+                        <div class="paytype" style="display:none">
+                            <p>支付方式</p>
+                            <div>
+                                <div class="radio"></div>
+                                <h3>支付宝</h3>
+                            </div>
+                            <div>
+                                <div class="radio"></div>
+                                <h3>微信支付</h3>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="num">
+                                <p>订单编号</p>
+                                <input type="number" v-model="order_num"/>
+                            </div>
+                            <div class="id">
+                                <p>用户ID</p>
+                                <input type="number" v-model="customerid"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="name">
+                                <p>联系人</p>
+                                <input type="text" v-model="username" />
+                            </div>
+                            <div class="two">
+                                <div>
+                                    <p>手机号码</p>
+                                    <input type="number" id="phone" v-model="phone" oninput="if(value.length>11)value=value.slice(0,11)" />
+                                </div>
+                                <div class="price">
+                                    <p>订单金额</p>
+                                    <input id="price" type="number" v-model="price"/>
+                                    <div>￥：</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="buy-time">
+                                <p>购买时间</p>
+                                <input id="buy-time" type="text" v-model.lazy="buy_time" readonly="readonly"/>
+                            </div>
+                            <div class="two">
+                                <div class="start-time">
+                                    <p>开始时间</p>
+                                    <input id="start-time" type="text" v-model.lazy="start_time" readonly="readonly"/>
+                                </div>
+                                <div class="space">
+                                    <p>发货间隔天数</p>
+                                    <div>
+                                        <div class="reduce" @click="ReduceSpacing">-</div>
+                                        <input type="number" v-model="spacing" oninput="if(value.length>2)value=value.slice(0,2)" />
+                                        <div class="add" @click="AddSpacing">+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="high">
+                            <div>
+                                <p>收货地址</p>
+                            <textarea id="address" placeholder="按照格式：湖北省 武汉市 江岸区 十大家工业园" name="" v-model="address" >
+                            </textarea>
+                            </div>
+                            <div>
+                                <p>订单备注</p>
+                                <textarea name="" v-model="remark"></textarea>
+                            </div>
+                        </div>
+                        <h3 class="title">2.订购内容设置</h3>
+                        <div class="goods" id="plan-goods">
+                            <p>计划商品</p>
+                            <div>
+                                <div class="goods-wrap" v-if="plangoods_list.selectgoods.length>0">
+                                    <div class="goods-title">
+                                        <div>商品</div>
+                                        <div>价格</div>
+                                        <div>周数</div>
+                                        <div>操作</div>
+                                    </div>
+                                    <li-goods v-for="(dat,index) in plangoods_list.selectgoods" :data="dat" :index="index" :type="'plan'"></li-goods>
+                                </div>
+                                <div class="add" data-toggle="modal" data-target="#goods" @click="GoodsShow('plan')">
+                                    <img src="../../image/addgoods.png" alt=""/>
+                                    <p>添加商品</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="goods" id="addpack-goods">
+                            <p>辅粮商品</p>
+                            <div>
+                                <div class="goods-wrap" v-if="addgoods_list.selectgoods.length>0">
+                                    <div class="goods-title">
+                                        <div>商品</div>
+                                        <div>价格</div>
+                                        <div>数量</div>
+                                        <div>操作</div>
+                                    </div>
+                                    <li-goods v-for="(dat,index) in addgoods_list.selectgoods" :data="dat" :index="index" :type="'all'"></li-goods>
+                                </div>
+                                <div class="add" data-toggle="modal" data-target="#goods" @click="GoodsShow('add')">
+                                    <img src="../../image/addgoods.png" alt=""/>
+                                    <p>添加商品</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="footer">
+    <div id="submit">提交</div>
+</div>
+<div id="footer-footer"></div>
+
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bootstrap.min.js"></script>
+<script src="../../script/time.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/order-import.js"></script>
+</html>

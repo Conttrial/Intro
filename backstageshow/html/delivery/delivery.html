@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet" href="../../style/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/delivery.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src='../../script/LodopFuncs.js'></script>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="3" ref="ch"></sr>
+</div>
+<div id="wrap">
+    <div id="body">
+        <div id="body-nav">
+            <h3>当前位置：</h3>
+            <p>发货管理</p>
+        </div>
+        <div id="search">
+            <input type="text" placeholder="用户名/手机号码/订单号" v-model="keyword"/>
+            <h3>发货时间：</h3>
+            <div class="start-time">开始时间</div>
+            <p></p>
+            <div class="end-time">结束时间</div>
+
+            <div class="menu-wrap status" @click="MenuShow">
+                <p v-if="status==99">全部状态</p>
+                <p v-else-if="status==1">待发货</p>
+                <p v-else-if="status==2">已发货</p>
+                <p v-else-if="status==5">挂起</p>
+                <p v-else-if="status==6">撤回</p>
+                <img src="../../image/pull-down.png"/>
+                <div class="menu">
+                    <div v-for="(data,index) in statuslist" :data-status="data.status" @click="Select(data.status)" :class="{active:data.status==status}">{{data.name}}</div>
+                </div>
+            </div>
+            <div class="search" @click="Search">
+                <h3>搜索</h3>
+            </div>
+        </div>
+        <div id="main">
+            <div class="main-top">
+                <div class="main-top-left">
+                    <img src="../../image/list.png"/>
+                    <h3>订阅计划列表</h3>
+                    <div class="type-nav">
+                        <div class="radio-wrap" :class="{active:HasType.type99}" data-status="99" @click="ChangeType(99)">
+                            <div class="radio"></div>
+                            <h3>全部</h3>
+                        </div>
+                        <div class="radio-wrap" :class="{active:HasType.type1}" data-status="1" @click="ChangeType(1)">
+                            <div class="radio"></div>
+                            <h3>购买</h3>
+                        </div>
+                        <div class="radio-wrap" :class="{active:HasType.type2}" data-status="2" @click="ChangeType(2)">
+                            <div class="radio"></div>
+                            <h3>补发</h3>
+                        </div>
+                        <div class="radio-wrap" :class="{active:HasType.type3}" data-status="3" @click="ChangeType(3)">
+                            <div class="radio"></div>
+                            <h3>补赠</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-time-wrap">
+                    <div class="radio-circle-wrap" :class="{active:time=='all'}" data-status="all" @click="ChangeTime('all')">
+                        <div class="radio"></div>
+                        <p>全部时间</p>
+                    </div>
+                    <div class="radio-circle-wrap" :class="{active:time=='today'}" data-status="today" @click="ChangeTime('today')">
+                        <div class="radio"></div>
+                        <p>今天</p>
+                    </div>
+                    <div id="main-time-select">
+                        <img src="../../image/Date_icon@20px.png"/>
+                        <p>选择时间：</p>
+                        <p v-if="time=='all'">全部时间</p>
+                        <p v-else-if="time=='today'">{{today}}</p>
+                        <p v-show="time==''"><span class="st"></span>{{endtime!=starttime?'-':''}}<span class="et" v-show="endtime!=starttime"></span></p>
+                    </div>
+                    <div class="time-control" v-if="timenextpre">
+                        <img src="../../image/pre.png" alt="" @click="NextPreTime('pre')"/>
+                        <img src="../../image/next.png" alt="" v-if="timenextpre &&starttime !=today" @click="NextPreTime('next')"/>
+                    </div>
+                </div>
+            </div>
+            <div class="nav">
+                <div class="status-wrap">
+                    <div :class="{active:status==1}" @click="ChangeStatus(1)" data-status="1" v-if="statuslimit==99 || statuslimit==1"><h3>待发货</h3></div>
+                    <div :class="{active:status==2}" @click="ChangeStatus(2)" data-status="2" v-if="statuslimit==99 || statuslimit==2"><h3>已发货</h3></div>
+                    <div :class="{active:status==5}" @click="ChangeStatus(5)" data-status="5" v-if="statuslimit==99 || statuslimit==5"><h3>挂起</h3></div>
+                    <div :class="{active:status==6}" @click="ChangeStatus(6)" data-status="6" v-if="statuslimit==99 || statuslimit==6"><h3>撤回</h3></div>
+                    <div :class="{active:status==99}" @click="ChangeStatus(99)" data-status="99" v-if="statuslimit==99"><h3>全部</h3></div>
+                </div>
+                <div class="invoice-wrap">
+                    <div class="radio-wrap" :class="{active:invoice == 99}" @click="ChangeInvoice(99)">
+                        <div class="radio"></div>
+                        <h3>全部</h3>
+                    </div>
+                    <div class="radio-wrap" :class="{active:invoice == 1}"  @click="ChangeInvoice(1)">
+                        <div class="radio"></div>
+                        <h3>已打印发货单</h3>
+                    </div>
+                    <div class="radio-wrap" :class="{active:invoice == 0}"  @click="ChangeInvoice(0)">
+                        <div class="radio"></div>
+                        <h3>未打印发货单</h3>
+                    </div>
+                </div>
+            </div>
+            <div id="order-list">
+                <div id="order-list-top">
+                    <div></div>
+                    <div>用户</div>
+                    <div>商品</div>
+                    <div>周期/类型</div>
+                    <div>配送时间</div>
+                    <div>状态</div>
+                    <div>发货单</div>
+                    <div>备注</div>
+                    <div>操作</div>
+                </div>
+                <div id="order-list-content">
+                    <li v-for="(data,index) in list" :class="{active:data.select}">
+                        <div class="select-wrap" @click="SelectList(index)">
+                            <div class="select" ></div>
+                        </div>
+                        <div class="user">
+                            <div>
+                                <p class="name">{{data.address.username}}</p>
+                                <p class="phone">{{data.address.phone}}</p>
+                                <p class="from">默认</p>
+                            </div>
+                            <div>
+                                <p class="address">{{data.address.addressdetail}}</p>
+                            </div>
+                        </div>
+                        <div class="goods" :class="{ more:data.goodslist.length>2}">
+                            <div v-for="(dat,index) in data.goodslist" v-if="index<2&&dat.number>0">
+                                <p class="goodsname">{{dat.name}}</p>
+                                <p class="goodsnum">X{{dat.number}}</p>
+                            </div>
+                            <div class="menu" v-if="data.goodslist.length>2">
+                                <div v-for="(dat,index) in data.goodslist" v-if="dat.number>0">
+                                    <p class="goodsname">{{dat.name}}</p>
+                                    <p class="goodsnum">X{{dat.number}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cycle">
+                            <p>{{data.week}}/{{data.weeks}}</p>
+                            <p v-if="data.type== 1">购买</p>
+                            <p v-else-if="data.type== 2">补发</p>
+                            <p v-else-if="data.type== 3">补赠</p>
+                            <p v-else-if="data.type== 5">合并</p>
+                        </div>
+                        <div class="time">
+                            <p><span>计划：</span><b>{{data.plan_time}}</b></p>
+                            <p v-if="data.send_time"><span>实发：</span><b>{{data.send_time}}</b></p>
+                        </div>
+                        <div class="info">
+                            <div>
+                                <img v-if="data.status==3" src="../../image/Done@20px.png" alt=""/>
+                                <img v-else-if="data.status==4" src="../../image/time_icon@20px.png" alt=""/>
+                                <img v-else-if="data.status==5" src="../../image/warning_icon@20px.png" alt=""/>
+                                <img v-else-if="data.status==6" src="../../image/recover_icon@20px.png" alt=""/>
+                                <p v-if="data.status==1">待发出</p>
+                                <p v-else-if="data.status==2">已发货</p>
+                                <p v-else-if="data.status==5" style="color:#f76260">挂起中</p>
+                                <p v-else-if="data.status==6" style="color:#f76260">追回中</p>
+                            </div>
+                            <div v-if="data.expressnum && data.expressname">
+                                <p>{{data.expressname}}:</p>
+                                <a @click="ExpressSearch(data.expressnum)">{{data.expressnum}}</a>
+                            </div>
+                        </div>
+                        <div class="invoice">
+                            <p v-if="data.invoice == 1">已打印</p>
+                            <p v-else>未打印</p>
+                        </div>
+                        <div class="remark-wrap">
+                            <div v-if="data.status ==3">--</div>
+                            <img v-else-if="data.remark.length>0" @click ="Remark(0,index,data.id,data.orderid)" @mouseover="Remark(0,index,data.id,data.orderid)" src="../../image/news.png" alt=""/>
+                            <div v-else class="remark" @click="Remark(1,index,data.id,data.orderid)">备注</div>
+                        </div>
+                        <div class="operation">
+                            <div v-if="data.status==1" class="edit" @click="HangDeal(data.id,index,1)">挂起</div>
+                            <div v-else-if="data.status==2" class="no">--</div>
+                            <div v-else-if="data.status==6" class="deal" @click="HangDeal(data.id,index,3)">处理</div>
+                            <div v-else-if="data.status==5" class="cancel" @click="HangDeal(data.id,index,2)">撤销</div>
+                        </div>
+                    </li>
+                </div>
+
+            </div>
+            <div class="control-wrap">
+                <div>
+                    <div class="left">
+                        <div class="all" @click="AllSelect" >
+                            <div class="select" :class="{active:allselect==1}"></div>
+                            <p>全选</p>
+                        </div>
+                        <div class="btn" @click="PrintExpress">
+                            打印快递单
+                        </div>
+                        <div class="btn"@click="PrintInvoice">
+                            打印发货单
+                        </div>
+                        <div class="btn all-send" v-if="btns.allsend" @click="AllSend">
+                            全部发货
+                        </div>
+                        <div class="btn" v-if="btns.manual" data-toggle="modal" :data-target="manual" @click="Manual">
+                            手工发货
+                        </div>
+                        <div class="btn deal" v-if="btns.deal" @click="Deal">
+                            处理
+                        </div>
+                    </div>
+                    <div class="right">
+                        <p>第 <span>{{nowpage}}</span> 页，共 <span>{{Pages}}</span> 页，合计 <span>{{nownum}}</span> 条记录；每页显示</p>
+                        <div class="pages" data-page="100" @click="PageMenu">
+                            <p>{{showpages}}条</p>
+                            <div class="triangle"></div>
+                            <div class="menu">
+                                <div data-page="10" @click="ChangeShowPages">10条</div>
+                                <div data-page="20" @click="ChangeShowPages">20条</div>
+                                <div data-page="50" @click="ChangeShowPages">50条</div>
+                                <div data-page="100" @click="ChangeShowPages">100条</div>
+                                <div data-page="200" @click="ChangeShowPages">200条</div>
+                                <div class="nowpage" @click="ChangeShowPages">{{showpages}}条</div>
+                            </div>
+                        </div>
+                        <p>记录</p>
+                        <div class="page-btn">
+                            <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                            <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                            <div class="paging">
+                                <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6" :key="index">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                            </div>
+                            <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                            <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="remarks-pop" @click="StopEvent">
+        <div class="triangle"></div>
+        <div id="remarks-content">
+            <li v-for="data in lis">
+                <div class="circle"></div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>{{data.name}}</h3>
+                            <span>{{data.time}}</span>
+                        </div>
+                        <p>计划备注</p>
+                    </div>
+                    <p>{{data.content}}</p>
+                </div>
+            </li>
+        </div>
+        <div id="remarks-bottom">
+            <textarea v-if="!show" name="remarks" id="remarks-text" v-model="remark_content"></textarea>
+            <div id="remarks-btns">
+                <div v-if="show" @click="OpenRemark" id="remarks-add">
+                    添加备注
+                </div>
+                <div v-else id="remarks-adding">
+                    <div id="remarks-adding-btns">
+                        <div id="remarks-cancel" @click="OpenRemarks">取消</div>
+                        <div id="remarks-submit" @click="SubmitRemark">发布</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer-footer">
+        <footer-common></footer-common>
+    </div>
+</div>
+<div id="cover" class="pop" @click="Cancel">
+    <div onclick="event.stopPropagation();">
+        <div class="top">
+            <img src="../../image/warning_icon@20px.png"/>
+            <p v-if="type==1">确定将计划挂起吗？</p>
+            <p v-else-if="type == 2">确定撤销挂起吗？</p>
+            <p v-else-if="type==3">确定已向快递方联系退回寄件？</p>
+            <p v-else-if="type==4">确定已发货吗？</p>
+        </div>
+        <div class="bottom">
+            <div class="confirm" @click="Confirm">确定</div>
+            <div class="cancel" @click="Cancel">取消</div>
+        </div>
+    </div>
+</div>
+<div id="manual" class="modal fade" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" onclick="event.stopPropagation();">
+        <div class="top">
+            <p></p>
+            <h3>手工发货</h3>
+            <p @click="Cancel">关闭</p>
+        </div>
+        <div class="content">
+            <div>
+                <p>选择快递：</p>
+                <div class="radio-circle-wrap" :class="{active:express=='zto'}"  @click="ChangeExpress('zto')">
+                    <div class="radio"></div>
+                    <p>中通速递</p>
+                </div>
+                <div class="radio-circle-wrap" :class="{active:express=='sf'}"  @click="ChangeExpress('sf')">
+                    <div class="radio"></div>
+                    <p>顺丰速运</p>
+                </div>
+            </div>
+            <div class="expressnum-wrap">
+                <p>快递单号：</p>
+                <input type="number" v-model="expressnum"/>
+            </div>
+            <div class="btns">
+                <div class="cancel" @click="Cancel">取消</div>
+                <div class="confirm" @click="Confirm">确定</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bootstrap.min.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/delivery.js"></script>
+<script src="../../script/time.js"></script>
+</html>

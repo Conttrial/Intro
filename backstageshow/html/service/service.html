@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet" href="../../style/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/service.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="4" ref="ch"></sr>
+</div>
+<div class="modal fade" id="goods" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" @click="Cancel">
+    <div class="modal-dialog" role="document" onclick="event.stopPropagation();">
+        <div class="top">
+            <div class="top-left">
+            </div>
+            <div>
+                <h3>赠送商品<span>（合计{{list.length}}种）</span></h3>
+            </div>
+            <div class="close">
+                <p data-dismiss="modal" @click="Cancel">关闭</p>
+            </div>
+        </div>
+        <div class="content-wrap">
+            <div class="content">
+                <div class="content-top">
+                    <div>商品</div>
+                    <div>实际售价</div>
+                    <div>数量</div>
+                </div>
+                <li class="good" v-for="(data,index) in list" v-if="index>=(nowpage-1)*6 && index<nowpage*6" :key="'good'+index">
+                    <div>
+                        <img :src="data.img" alt=""/>
+                        <div>
+                            <h4>{{data.name}}</h4>
+                            <p>{{data.spec}}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p>￥{{data.price}}</p>
+                    </div>
+                    <div>
+                        {{data.number}}
+                    </div>
+                </li>
+            </div>
+            <div class="content-pages">
+                <p>第 {{nowpage}} 页，共 {{Pages}} 页，合计 {{list.length}} 条记录；每页显示 6 件商品</p>
+
+                <div class="page-btn">
+                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                    <div class="paging">
+                        <div v-for="index in Pages" :class="{active: index == nowpage}" @click="NowPage">{{index}}</div>
+                    </div>
+                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="cover" class="pop" @click="Cancel">
+    <div onclick="event.stopPropagation();">
+        <div class="top">
+            <img src="../../image/warning_icon@20px.png"/>
+            <p v-if="type==1">确定同意售后请求吗？</p>
+            <p v-else-if="type == 2">确定拒绝售后请求吗？</p>
+        </div>
+        <div class="bottom">
+            <div class="confirm" @click="Confirm">确定</div>
+            <div class="cancel" @click="Cancel">取消</div>
+        </div>
+    </div>
+</div>
+<div id="body">
+    <div id="remarks-pop" @click="StopEvent">
+        <div class="triangle"></div>
+        <div id="remarks-content">
+            <li v-for="data in lis">
+                <div class="circle"></div>
+                <div>
+                    <div>
+                        <div>
+                            <h3>{{data.name}}</h3>
+                            <span>{{data.time}}</span>
+                        </div>
+                        <p>售后备注</p>
+                    </div>
+                    <p>{{data.content}}</p>
+                </div>
+            </li>
+        </div>
+        <div id="remarks-bottom">
+            <textarea v-if="!show" name="remarks" id="remarks-text" v-model="remark_content"></textarea>
+            <div id="remarks-btns">
+                <div v-if="show" @click="OpenRemark" id="remarks-add">
+                    添加备注
+                </div>
+                <div v-else id="remarks-adding">
+                    <div id="remarks-adding-btns">
+                        <div id="remarks-cancel" @click="OpenRemarks">取消</div>
+                        <div id="remarks-submit" @click="SubmitRemark">发布</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="price-pop">
+        <div class="top">
+            <div v-if="type==1" class="price">
+                <p>金额:</p>
+                <input type="number" v-model="price"/>
+                <p class="price">￥</p>
+            </div>
+            <div v-else-if="type==2" class="recovery">
+                <img src="../../image/warning_icon@20px.png"/>
+                <p>还原最初申请退款金额？</p>
+            </div>
+        </div>
+        <div class="bottom">
+            <p class="confirm" @click="Submit">确定</p>
+            <p class="cancel" @click="Cancel">取消</p>
+        </div>
+    </div>
+    <div id="body-nav">
+        <h3>当前位置：</h3>
+        <p>所有售后</p>
+    </div>
+    <div id="search">
+        <input type="text" placeholder="用户名/手机号码/订单号" v-model="keyword"/>
+        <h3>售后时间：</h3>
+        <div class="start-time">开始时间</div>
+        <p></p>
+        <div class="end-time">结束时间</div>
+        <div class="menu-wrap status" @click="MenuShow">
+            <p v-if="status==99">全部状态</p>
+            <p v-else-if="status==1">未处理</p>
+            <p v-else-if="status==2">已处理</p>
+            <img src="../../image/pull-down.png"/>
+            <div class="menu">
+                <li v-for="(data,index) in statuslist" :data-status="data.status" @click="Select" :class="{active:data.status==status}">{{data.name}}</li>
+            </div>
+        </div>
+        <div class="search" @click="Search">
+            <h3>搜索订单</h3>
+        </div>
+    </div>
+    <div id="main">
+        <div class="top">
+            <img src="../../image/Warnning@30px.png"/>
+            <h3>售后列表</h3>
+        </div>
+        <div class="nav">
+            <div class="status-wrap">
+                <div :class="{active:status==1}" @click="ChangeStatus" data-status="1" v-if="statuslimit==99 || statuslimit==1"><h3>未处理</h3></div>
+                <div :class="{active:status==2}" @click="ChangeStatus" data-status="2" v-if="statuslimit==99 || statuslimit==2"><h3>已处理</h3></div>
+                <div :class="{active:status==99}" @click="ChangeStatus" data-status="99" v-if="statuslimit==99"><h3>全部</h3></div>
+            </div>
+            <div class="type-wrap">
+                <div class="radio-wrap" @click="ChangeType" data-type="99" :class="{active:HasType.type99}">
+                    <div class="radio"></div>
+                    <h3>全部</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangeType" data-type="1" :class="{active:HasType.type1}">
+                    <div class="radio"></div>
+                    <h3>退款</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangeType" data-type="2" :class="{active:HasType.type2}">
+                    <div class="radio"></div>
+                    <h3>补发</h3>
+                </div>
+                <div class="radio-wrap" @click="ChangeType" data-type="3" :class="{active:HasType.type3}">
+                    <div class="radio"></div>
+                    <h3>补赠</h3>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="title">
+                <div></div>
+                <div>订单编号</div>
+                <div>用户</div>
+                <div>申请人</div>
+                <div>售后进度</div>
+                <div>售后方式</div>
+                <div>操作</div>
+            </div>
+            <ul class="list-wrap">
+                <li v-for="(data,index) in list" v-if="(HasType.type99 || HasType['type'+data.type]) && (data.status==status || status==99)" :class="{active:data.check}">
+                    <div class="top">
+                        <div class="select" :data-index="index" @click="Select">
+                            <div :class="{active:data.select==1}"></div>
+                        </div>
+                        <div>
+                            #{{data.ordernum}}
+                        </div>
+                        <div>
+                            <p>{{data.name}}</p>
+                            <p>{{data.phone}}</p>
+                        </div>
+                        <div>
+                            <p v-if="data.applicanttype =='accounting'">财务：{{data.applicantname}}</p>
+                            <p v-else-if="data.applicanttype =='customerservice'">客服：{{data.applicantname}}</p>
+                            <p v-else-if="data.applicanttype =='executivedirector'">主管：{{data.applicantname}}</p>
+                            <p v-else-if="data.applicanttype =='administrators'">管理员：{{data.applicantname}}</p>
+                            <p v-else-if="data.applicanttype =='admin'">admin：{{data.applicantname}}</p>
+                        </div>
+                        <div>
+                            <div class="progress">
+                                <div class="progress-wrap">
+                                    <img src="../../image/Done@20px.png"/>
+                                    <p>发起售后申请</p>
+                                </div>
+                                <div class="line" :class="{green:data.progress==12||data.progress==31||data.progress==22,red:data.progress==21}">
+
+                                </div>
+                                <div class="progress-wrap">
+                                    <img v-if="data.progress==11" src="../../image/Process_wait@20px.png"/>
+                                    <img v-else-if="data.progress==12||data.progress==22||data.progress==31" src="../../image/Done@20px.png"/>
+                                    <img v-else-if="data.progress==21" src="../../image/warning_icon@20px.png"/>
+                                    <p v-if="data.progress==11">等待主管审批</p>
+                                    <p v-else-if="data.progress==12||data.progress==22||data.progress==31">主管审批通过</p>
+                                    <p v-else-if="data.progress==21" style="color:#f76260">主管审批未过</p>
+                                </div>
+                                <div class="line" v-if="data.progress!=21" :class="{green:data.progress ==31,red:data.progress==22}">
+
+                                </div>
+                                <div class="progress-wrap" v-if="data.progress!=21">
+                                    <img v-if=" data.progress== 11|| data.progress==12" src="../../image/Process_wait@20px.png"/>
+                                    <img v-else-if="data.progress==31" src="../../image/Done@20px.png"/>
+                                    <img v-else-if="data.progress==22" src="../../image/warning_icon@20px.png"/>
+                                    <p v-if="data.progress==11||data.progress==12">等待财务审批</p>
+                                    <p v-else-if="data.progress==31">财务审批通过</p>
+                                    <p v-else-if="data.progress==22" style="color:#f76260">财务审批未过</p>
+                                </div>
+                            </div>
+                            <div class="time">
+                                <p>{{data.applytime}}</p>
+                                <p>{{data.executivedirectortime}}</p>
+                                <p v-if="data.progress!=21">{{data.accountingtime}}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p v-if="data.type==1">退款</p>
+                            <p v-else-if="data.type==2">补发</p>
+                            <p v-else-if="data.type==3">补赠</p>
+                        </div>
+                        <div>
+                            <button @click="Check(1)" :data-index="index" v-if="!data.check">查看</button>
+                            <button @click="Check(2)" :data-index="index" v-else class="up">收起</button>
+                        </div>
+                    </div>
+                    <div class="content" v-show="data.check">
+                        <div class="order-detail">
+                            <div class="order-detail-top">
+                                <div>
+                                    <img src="../../image/order.png" alt=""/>
+                                    <h3 v-cloak>订单：#{{data.ordernum}}</h3>
+                                </div>
+                            </div>
+                            <div class="order-detail-bottom">
+                                <div class="order-detail-info">
+                                    <div>
+                                        <p>收件人： <span v-cloak>{{data.orderdetail.username}}，{{data.orderdetail.phone}}，{{data.orderdetail.address}}</span></p>
+                                    </div>
+                                    <div>
+                                        <div><p>购买方式：<span v-if="data.orderdetail.platform ==1" v-cloak>淘宝</span><span v-else-if="data.orderdetail.platform ==2" v-cloak>App</span><span v-else-if="data.orderdetail.platform ==3" v-cloak>微信</span></p></div>
+                                        <div><p>购买时间：<span v-cloak>{{data.orderdetail.time}}</span></p></div>
+                                        <div><p>店铺活动：<span v-cloak>{{data.orderdetail.activity?data.orderdetail.activity:"无"}}</span></p></div>
+                                        <div><p>优惠券信息：<span v-cloak>{{data.orderdetail.discount?data.orderdetail.discount:"无"}}</span></p></div>
+                                    </div>
+                                    <div>
+                                        <div><p>付款信息：<span v-cloak>{{data.orderdetail.paid?"已支付":"未支付"}}/{{data.orderdetail.paytype=="wx"?"微信":"支付宝"}}</span></p></div>
+                                        <div><p>付款金额：<span v-cloak>￥{{data.orderdetail.price}}元</span></p></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                                <div class="order-detail-goods-title">
+                                    <div>购买的商品</div>
+                                    <div>属性</div>
+                                    <div>单价</div>
+                                    <div>数量</div>
+                                    <div>周期</div>
+                                </div>
+                                <ul class="order-detail-goods">
+                                    <li v-for="(dat,index1) in data.orderdetail.goodslist"  v-if="index1 <3*data.orderdetail.page && index1 >= (data.orderdetail.page-1)*3">
+                                        <div>
+                                            <img :src="dat.img" alt=""/>
+                                            <p>{{dat.name}}</p>
+                                        </div>
+                                        <div>
+                                            <p>{{dat.spec}}</p>
+                                        </div>
+                                        <div>
+                                            <p>￥{{dat.price}}</p>
+                                        </div>
+                                        <div>
+                                            <p>x{{dat.number}}</p>
+                                        </div>
+                                        <div>
+                                            <p>{{dat.week}}周</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="order-detail-goods-bottom">
+                                    <div>
+                                        <p>第 <span v-cloak>{{data.orderdetail.page}}</span> 页，共 <span v-cloak>{{GoodsPages[index]}}</span> 页，合计 <span v-cloak>{{data.orderdetail.goodslist.length}}</span> 种商品；</p>
+                                    </div>
+                                    <div>
+                                        <div @click="GoodsPre(index)">
+                                            <img src="../../image/pre.png" alt=""/>
+                                            <p>上一页</p>
+                                        </div>
+                                        <div @click="GoodsNext(index)">
+                                            <p>下一页</p>
+                                            <img src="../../image/next.png" alt=""/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="deal">
+                            <div class="top">
+                                <h3>售后处理</h3>
+                            </div>
+                            <div class="content">
+                                <div class="aftersale"><p>售后次数:</p><span @click="CheckAllAfterSales(index)">{{data.aftersalenum}}/{{data.aftersaleallnum}}</span></div>
+                                <div>
+                                    <p>售后类型:</p>
+                                    <span v-if="data.type==1">退款</span>
+                                    <span v-else-if="data.type==2">补发</span>
+                                    <span v-else-if="data.type==3">补赠</span>
+                                </div>
+                                <div>
+                                    <p>商品类型:</p>
+                                    <span v-if="data.goodstype=='all'">订阅计划,增值包</span>
+                                    <span v-else-if="data.goodstype=='plan'">订阅计划</span>
+                                    <span v-else-if="data.goodstype=='addpack'">增值包</span>
+                                </div>
+                                <div class="gift">
+                                    <p>补偿赠品:</p>
+                                    <span class="giftgoods" v-if="data.giftgoods.length>0" data-toggle="modal" data-target="#goods" @click="CheckGoods(index)">查看赠品</span>
+                                    <span v-else>无</span>
+                                </div>
+                                <div>
+                                    <p>订阅周期:</p>{{data.allweeks}}周
+                                </div>
+                                <div>
+                                    <p>剩余周期:</p>{{data.rweek}}周
+                                </div>
+                                <div>
+                                    <p>申请人员:</p>
+                                    <span v-if="data.applicanttype =='accounting'">财务{{data.applicantname}}</span>
+                                    <span v-else-if="data.applicanttype =='customerservice'">客服{{data.applicantname}}</span>
+                                    <span v-else-if="data.applicanttype =='executivedirector'">主管{{data.applicantname}}</span>
+                                    <span v-else-if="data.applicanttype =='administrators'">管理员{{data.applicantname}}</span>
+                                    <span v-else-if="data.applicanttype =='admin'">admin{{data.applicantname}}</span>
+                                </div>
+                                <div class="remarks">
+                                    <p>售后备注:</p>
+                                    <button v-if="data.remarks.length==0" @click ="Remark(1,index)">备注</button>
+                                    <img @click ="Remark(0,index)" @mouseover="Remark(0,index)" v-else src="../../image/news_icon@20px.png">
+                                </div>
+                                <div>
+                                    <p>申请时间:</p>{{data.applytime}}
+                                </div>
+                                <div>
+                                    <p>客服主管:</p>
+                                    <span v-if="data.progress==11">等待审批</span>
+                                    <span v-else-if="data.progress==21">拒绝申请</span>
+                                    <span v-else>同意申请</span>
+                                </div>
+                                <div class="refund">
+                                    <p>退款金额:</p>
+                                    <div v-if="data.type ==1" class="price">
+                                        <span>￥{{data.price}}</span>
+                                        <div class="edit" @click="Price(1,index)">编辑</div>
+                                        <div class="recovery" @click="Price(0,index)">还原</div>
+                                    </div>
+                                    <div v-else>
+                                        无需退款
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>财务主管:</p>
+                                    <span v-if="data.progress==11||data.progress==12">等待审批</span>
+                                    <span v-else-if="data.progress==22">拒绝申请</span>
+                                    <span v-else-if="data.progress==31">同意申请</span>
+                                    <span v-else>--</span>
+                                </div>
+                                <div>
+                                    <p>售后周期:</p>
+                                    {{data.weeks}}
+                                </div>
+                            </div>
+                            <div class="bottom" v-if="usertype == 'executivedirector' || usertype == 'administrators'">
+                                <div class="btns" v-if="data.progress==11">
+                                    <div class="refuse" @click="Refuse(data.id,index)">拒绝</div>
+                                    <div class="approve" @click="Approve(data.id,index)">同意</div>
+                                </div>
+                                <div v-else-if="data.progress==12">
+                                    <img src="../../image/Process_wait@20px.png"/>
+                                    <p class="wait">等待财务审批</p>
+                                </div>
+                                <div v-else-if="data.progress==21 ||data.progress==22">
+                                    <img src="../../image/warning_icon@20px.png"/>
+                                    <p>已经拒绝申请</p>
+                                </div>
+                                <div v-else-if="data.progress==31">
+                                    <img src="../../image/Done@20px.png"/>
+                                    <p>已经同意申请</p>
+                                </div>
+                            </div>
+                            <div class="bottom" v-else-if="usertype=='accounting'">
+                                <div class="btns" v-if="data.progress==12">
+                                    <div class="refuse" @click="Refuse(data.id,index)">拒绝</div>
+                                    <div class="approve" @click="Approve(data.id,index)">同意</div>
+                                </div>
+                                <div v-else-if="data.progress==22">
+                                    <img src="../../image/warning_icon@20px.png"/>
+                                    <p>已经拒绝申请</p>
+                                </div>
+                                <div v-else-if="data.progress==31">
+                                    <img src="../../image/Done@20px.png"/>
+                                    <p>已经同意申请</p>
+                                </div>
+                            </div>
+                            <div class="bottom" v-else-if="usertype=='admin'">
+                                <div class="btns" v-if="data.progress==11 ||data.progress==12">
+                                    <div class="refuse" @click="Refuse(data.id,index)">拒绝</div>
+                                    <div class="approve" @click="Approve(data.id,index)">同意</div>
+                                </div>
+                                <div v-else-if="data.progress==21||data.progress==22">
+                                    <img src="../../image/warning_icon@20px.png"/>
+                                    <p>已经拒绝申请</p>
+                                </div>
+                                <div v-else-if="data.progress==31">
+                                    <img src="../../image/Done@20px.png"/>
+                                    <p>已经同意申请</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="control-wrap">
+            <div>
+                <div class="left">
+                    <div class="all" @click="AllSelect" >
+                        <div class="select" :class="{active:allselect==1}"></div>
+                        <p>全选</p>
+                    </div>
+                    <div class="allcheck" @click="AllCheck">
+                        全部查看
+                    </div>
+                    <div class="allrefuse" v-if="allrefuse" @click="AllRefuse">
+                        全部拒绝
+                    </div>
+                    <div class="allagree" v-if="allapprove" @click="AllApprove">
+                        全部同意
+                    </div>
+                </div>
+                <div class="right">
+                    <p>第 <span>{{nowpage}}</span> 页，共 <span>{{Pages}}</span> 页，合计 <span>{{nownum}}</span> 条记录；每页显示</p>
+                    <div class="pages" data-page="100" @click="PageMenu">
+                        <p>{{showpages}}条</p>
+                        <div class="triangle"></div>
+                        <div class="menu">
+                            <div data-page="10" @click="ChangeShowPages">10条</div>
+                            <div data-page="20" @click="ChangeShowPages">20条</div>
+                            <div data-page="50" @click="ChangeShowPages">50条</div>
+                            <div data-page="100" @click="ChangeShowPages">100条</div>
+                            <div data-page="200" @click="ChangeShowPages">200条</div>
+                            <div class="nowpage" @click="ChangeShowPages">{{showpages}}条</div>
+                        </div>
+                    </div>
+                    <p>记录</p>
+                    <div class="page-btn">
+                        <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                        <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                        <div class="paging">
+                            <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6" :key="index">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                        </div>
+                        <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                        <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="../../script/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/time.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/service.js"></script>
+</html>

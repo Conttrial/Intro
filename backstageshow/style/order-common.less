@@ -1,0 +1,53 @@
+.middle1440{
+  margin:0 auto;width:1440px;
+}
+.border-padding{
+  box-sizing: border-box;border: 1px solid #ddd;padding:0 28px;margin-top:20px;
+}
+input::-webkit-input-placeholder {
+  　　color:#bbb;font-family: "pinghei";
+}
+  #search-wrap{
+    width:1440px;margin:0 auto;
+  }
+  #search{
+    .border-padding;
+    height:80px;background: #fff;display:flex;align-items: center;
+    #search-content{
+      width:600px;height:50px;border:1px solid #f1f1f1;border-radius: 4px;background: #fafafa;font-size:19.5px;
+      color:#3b3934;padding:0 28px;box-sizing: border-box;
+    }
+    h3{font-size:18px;color:#999999;margin:0 6px 0 38px;word-break: keep-all;}
+    >div{width:161px;height:50px;line-height: 50px;box-sizing: border-box;}
+    #search-starttime,#search-endtime{
+      border:1px solid #f1f1f1;background: #fafafa;user-select: none;
+      font-size:18px;color:#bbb;text-align: center;border-radius: 4px;cursor: pointer;
+    }
+    .line{height:1px;width:11px;background: #ddd;margin:0 5px;}
+    #search-status{
+      border:1px solid #f2f2f2;background: #fafafa;border-radius: 4px;
+      display:flex;align-items: center;margin:0 20px;cursor: pointer;
+      position:relative;
+      p{color:#bbbbbb;font-size:20px;margin:0 30px;}
+      img{width:15px;height:8px;}
+      .menu{
+        width:100%;position:absolute;z-index:1000;box-sizing: border-box;background: #fff;
+        top:-1px;border:1px solid #ddd;border-radius: 4px;transform:scale(1,0);transform-origin: 0 0;
+        transition:300ms;overflow: hidden;box-shadow: 0 0 10px #ddd;
+        &.active{transform:scale(1,1);}
+        >li{
+          height:50px;box-sizing: border-box;border-top:1px solid #ddd;
+          transition:300ms;
+          &.active,&:hover{background: #3b3934;}
+          &.active p,&:hover p{background: #3b3934;color:#fff;}
+          &:first-child{border-top:none;}
+          p{margin:0;text-align: center;}
+        }
+      }
+    }
+    #search-btn{
+      text-align: center;background: #fec52d;border:1px solid #dcae33;cursor: pointer;border-radius: 4px;
+      width:140px;user-select: none;
+      h3{color:#3b3934;font-size:20px;margin:0;}
+    }
+  }

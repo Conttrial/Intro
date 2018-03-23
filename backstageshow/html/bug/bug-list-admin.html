@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我家小黑</title>
+    <link rel="stylesheet/less" type="text/css" href="../../style/common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/order-common.less"/>
+    <link rel="stylesheet/less" type="text/css" href="../../style/bug-list-admin.less"/>
+    <link rel="stylesheet" href="../../style/date-select.css"/>
+    <script src="http://cdn.bootcss.com/less.js/1.7.0/less.min.js"></script>
+</head>
+<body>
+<div id="header-header">
+    <sr :index="7" ref="ch"></sr>
+</div>
+<div id="body">
+    <div id="remarks-pop">
+        <div class="triangle"></div>
+        <div id="remarks-bottom">
+            <textarea  name="remarks" id="remarks-text"></textarea>
+            <p id="placeholder">回复@<span></span></p>
+            <div id="remarks-btns">
+                <div id="remarks-adding">
+                    <div></div>
+                    <div id="remarks-adding-btns">
+                        <div id="remarks-cancel" @click="OpenRemarks">取消</div>
+                        <div id="remarks-submit">发布</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="body-nav">
+        <h3>当前位置：</h3>
+        <p>我的</p>
+        <div class="src">
+            <img src="../../image/next.png" alt=""/>
+            <p>Bug信息列表</p>
+        </div>
+    </div>
+    <div id="search">
+        <input id="search-content" type="text" placeholder="在此输入搜索关键词"/>
+        <h3>提交时间：</h3>
+        <div id="search-starttime">
+            开始时间
+        </div>
+        <div class="line"></div>
+        <div id="search-endtime">
+            结束时间
+        </div>
+        <div id="search-status">
+            <p>全部人员</p>
+            <img src="../../image/pull-down.png" alt=""/>
+            <div class="menu">
+                <div v-for="data in list" :key="data.id" :data-id="data.id" @click="Select" :class="{active:data.id == 999}">{{data.name}}</div>
+            </div>
+        </div>
+        <div id="search-btn">
+            <h3>搜索</h3>
+        </div>
+    </div>
+    <div id="main">
+        <div id="order-top">
+            <div>
+                <img src="../../image/bug-list.png" alt=""/>
+            </div>
+            <h3>bug信息列表</h3>
+        </div>
+        <div id="order-status">
+            <div class="status">
+                <div class="active status-btn" data-status="0" @click="ChangeStatus"><h3>待处理（<span>{{NoSolve}}</span>）</h3></div>
+                <div class="status-btn" data-status="1" @click="ChangeStatus"><h3>已解决（<span>{{Solve}}</span>）</h3></div>
+                <div class="status-btn" data-status="100" @click="ChangeStatus"><h3>全部（<span>{{lis_all.length}}</span>）</h3></div>
+            </div>
+            <div class="from">
+                <div class="btn-all active" @click="ChangeFrom($event)">
+                    <div></div>
+                    <h3>全部</h3>
+                </div>
+                <div data-from ="0" @click="ChangeFrom($event)">
+                    <div></div>
+                    <h3>我家小黑App</h3>
+                </div>
+                <div data-from="1" @click="ChangeFrom($event)">
+                    <div></div>
+                    <h3>微信应用</h3>
+                </div>
+                <div data-from="2" @click="ChangeFrom($event)">
+                    <div></div>
+                    <h3>后台管理中心</h3>
+                </div>
+            </div>
+        </div>
+        <div id="order-content">
+            <div id="order-content-top">
+                <h3 class="description">问题描述</h3>
+                <h3 class="from">所属平台</h3>
+                <h3 class="module">所属页面&模块</h3>
+                <h3 class="times">出现频次</h3>
+                <h3 class="level">严重级别</h3>
+                <h3 class="sub-time">提交时间</h3>
+                <h3 class="solve-time">处理时间</h3>
+                <h3 class="user">用户</h3>
+                <h3 class="check">操作</h3>
+            </div>
+            <div id="order-content-main">
+                <lis v-for="(data,index) in lis" :to="data" :index="index"></lis>
+                <!--<li>-->
+                    <!--<div class="content">-->
+                        <!--<div>-->
+                            <!--<div>-->
+                                <!--<div>-->
+                                    <!--<img src="../../image/link.png" alt=""/>-->
+
+                                    <!--<h3>查看截图</h3>-->
+                                <!--</div>-->
+                                <!--Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C 的哪些不足？融合了哪些其他语言的优秀特性？将它和-->
+                                <!--C#相比各有什么优劣？它会未来的件开发产生什么影响？作为一个程序员，此刻，一个对世界费的语言，所有人所有所有人都是0基础你有什么想法？用性，有比较强行弥补了-->
+                                <!--Objective-C 的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C 的哪些不足？融合了哪用性，有比较强行弥补了 Objective-C-->
+                                <!--的哪些不足？融合了哪-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p>后台</p>-->
+
+                            <!--<p>管理中心</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p>管理中心订单页</p>-->
+
+                            <!--<p>订单详情页</p>-->
+
+                            <!--<p>申请售后弹出控件</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p>一定规律会触发</p>-->
+
+                            <!--<p>100%发生</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p>无法正常工作</p>-->
+
+                            <!--<p>必须解决此bug</p>-->
+
+                            <!--<p>才能进行正常工作</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p>2017/10/13 16:00:00</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p>2017/10/13 16:00:00</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<p>客服：小白</p>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<div>-->
+                                <!--<div class="solve">-->
+                                    <!--已解决-->
+                                <!--</div>-->
+                                <!--<div class="reply">-->
+                                    <!--回复-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="reply">-->
+                        <!--<p>管理员：闫欢 @回复:</p>-->
+
+                        <!--<p>Swift 有类似 Python 的易用性，有比较强行弥补了 Objective-C 的哪些不足？融合了哪些其他语言的优秀特性？将它和-->
+                            <!--C#相比各有什么优劣？它会未来件么优劣？它会未来来件么优劣？它会未来来件么优劣？它会未来来件么优劣？它会未来来件么优劣？它会未来来件么优劣？它会未来来件么优劣？它会未来来件么优劣？它会未来来件么优劣？它会未来件么优劣？它会未来件么优劣？它会未来件开发产生什么影响？</p>-->
+                        <!--<div class="delete">-->
+                            <!--<img src="../../image/X.png" alt=""/>-->
+                            <!--<p>删除</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li-order :to="remarks"></li-order>-->
+                <!--<li>-->
+                <!--<div class="order-status"></div>-->
+                <!--<div class="number">-->
+                <!--#0102165625-->
+                <!--</div>-->
+                <!--<div class="user">-->
+                <!--<div>-->
+                <!--<p class="name">陈南康</p>-->
+                <!--<p class="phone">15634026055</p>-->
+                <!--<p class="from">App</p>-->
+                <!--</div>-->
+                <!--<div>-->
+                <!--<p class="address">山东省济南市历下区甸柳街道燕柳园门内丰巢快递箱</p>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="goods">-->
+                <!--<div>-->
+                <!--<p class="goodsname">超能小黑中型犬鲜粮250gx14包</p>-->
+                <!--<p class="goodsnum">X1</p>-->
+                <!--</div>-->
+                <!--<div>-->
+                <!--<p class="goodsname">自制低盐原味宠物羊奶酪狗零食100g</p>-->
+                <!--<p class="goodsnum">X1</p>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="cycle">-->
+                <!--4周-->
+                <!--</div>-->
+                <!--<div class="money">-->
+                <!--<p>￥99999.70</p>-->
+                <!--<p class="money-type">微信支付</p>-->
+                <!--</div>-->
+                <!--<div class="status">-->
+                <!--正常-->
+                <!--</div>-->
+                <!--<div class="times">-->
+                <!--<p>2017/07/23</p>-->
+                <!--<p>11:44:21</p>-->
+                <!--</div>-->
+                <!--<div class="remarks">-->
+                <!--<div>-->
+                <!--<p>备注</p>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="check">-->
+                <!--<div>-->
+                <!--<p>查看/管理</p>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</li>-->
+            </div>
+            <div id="order-content-bottom">
+                <div id="paging">
+                    <p>第<span>{{nowpage}}</span>页，共<span>{{Pages}}</span>页，合计<span>{{nownum}}</span>条记录；每页显示</p>
+                    <div class="pages" data-page="100" @click="PageMenu">
+                        <p>{{showpages}}条</p>
+                        <div class="triangle"></div>
+                        <div class="menu">
+                            <div data-page="2" @click="ChangeShowPages">2条</div>
+                            <div data-page="20" @click="ChangeShowPages">20条</div>
+                            <div data-page="50" @click="ChangeShowPages">50条</div>
+                            <div data-page="100" @click="ChangeShowPages">100条</div>
+                            <div data-page="200" @click="ChangeShowPages">200条</div>
+                            <div class="nowpage" @click="ChangeShowPages">{{showpages}}条</div>
+                        </div>
+                    </div>
+                    <p>记录</p>
+                </div>
+                <div class="page-btn">
+                    <div class="first" @click="FirstPage"><img src="../../image/first.png" alt=""/></div>
+                    <div class="pre" @click="PrePage"><img src="../../image/pre.png" alt=""/></div>
+                    <div class="paging">
+                        <div v-for="index in Pages" :class="{active: index+MiddlePages == nowpage}" @click="NowPage" v-if="index<6">{{parseInt(index)+parseInt(MiddlePages)}}</div>
+                    </div>
+                    <div class="next" @click="NextPage"><img src="../../image/next.png" alt=""/></div>
+                    <div class="last" @click="LastPage"><img src="../../image/last.png" alt=""/></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="cover">
+    <div class="wrap">
+        <div class="top">
+            <h3>查看截图</h3><p v-if="imgs.length>1">（<span>{{now+1}}</span>/2）</p>
+            <div @click="Close">关闭</div>
+        </div>
+        <div class="content" :class="{active:imgs.length>1}">
+            <div class="imgwrap" v-for="(data,index) in imgs" :key="index+1" v-if="index == now">
+                <img :src="data"/>
+                <a :href="data" target="_blank">查看原图</a>
+            </div>
+            <div class="pre" :class="{active:now>0}" @click="Pre"></div>
+            <div class="next" :class="{active:imgs.length>1&&now<1}" @click="Next"></div>
+        </div>
+    </div>
+</div>
+<div id="footer-footer">
+    <footer-common></footer-common>
+</div>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.js"></script>
+<script src="../../script/bug-list-admin.js"></script>
+<script src="../../script/time.js"></script>
+<script src="../../script/common.js"></script>
+</body>
+</html>
