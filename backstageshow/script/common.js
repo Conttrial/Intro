@@ -13,7 +13,7 @@ var header = new Vue({
             template:'<div id="header">'+
             '<div id="header-home">'+
             '<div>'+
-            '<img src="/backstage/image/logo.png" alt=""/>'+
+            '<img src="/Intro/backstageshow/image/logo.png" alt=""/>'+
             '<div>' +
             '<h3>超能小黑管理中心</h3>' +
             '<p>VERSION 2.0</p>'+
@@ -21,15 +21,15 @@ var header = new Vue({
             '</div>'+
             '</div>'+
             '<div id="header-nav">'+
-            '<div class="logo"><img src="/backstage/image/logo.png" alt=""/><h3>超能小黑管理中心</h3></div>'+
-            '<div><a href="/backstage/html/index1.html">首页</a></div>'+
-            '<div><a href="/backstage/html/order/order.html">订单</a></div>'+
-            '<div><a href="/backstage/html/delivery/delivery.html">发货</a></div>'+
-            '<div><a href="/backstage/html/service/service.html">售后</a></div>'+
-            '<div><a href="/backstage/html/goods/goods.html">商品</a></div>'+
-            '<div><a href="/backstage/html/weixin/weixin.html">微信</a></div>'+
-            '<div><a href="/backstage/html/bug/bug-list-admin.html">bug</a></div>'+
-            '<div><a href="/backstage/html/bug/personal-data.html">我的</a></div>'+
+            '<div class="logo"><img src="/Intro/backstageshow/image/logo.png" alt=""/><h3>超能小黑管理中心</h3></div>'+
+            '<div><a href="/Intro/backstageshow/html/index1.html">首页</a></div>'+
+            '<div><a href="/Intro/backstageshow/html/order/order.html">订单</a></div>'+
+            '<div><a href="/Intro/backstageshow/html/delivery/delivery.html">发货</a></div>'+
+            '<div><a href="/Intro/backstageshow/html/service/service.html">售后</a></div>'+
+            '<div><a href="/Intro/backstageshow/html/goods/goods.html">商品</a></div>'+
+            '<div><a href="/Intro/backstageshow/html/weixin/weixin.html">微信</a></div>'+
+            '<div><a href="/Intro/backstageshow/html/bug/bug-list-admin.html">bug</a></div>'+
+            '<div><a href="/Intro/backstageshow/html/bug/personal-data.html">我的</a></div>'+
             '</div>'+
             '</div>',
             methods:{
@@ -38,7 +38,7 @@ var header = new Vue({
                 },
                 LogOut:function(){
                     localStorage.clear();
-                    location.href='/backstage/html/login.html'
+                    location.href='/Intro/backstageshow/html/login.html'
                 }
             },
             created:function(){
@@ -56,8 +56,8 @@ var footer = new Vue({
             template:'<div id="footer-common">'+
                     '<div>'+
                     '<div>'+
-                    '<a class="bug" href="/backstage/html/bug/bug-submit.html">'+
-                    '<img src="/backstage/image/bug.png" alt=""/>'+
+                    '<a class="bug" href="/Intro/backstageshow/html/bug/bug-submit.html">'+
+                    '<img src="/Intro/backstageshow/image/bug.png" alt=""/>'+
                     '<p>Bug快速提交入口</p>'+
                     '</a>'+
                     '<a href="">超能小黑官网</a>'+
@@ -67,7 +67,7 @@ var footer = new Vue({
                     '<a href="">我家小黑App</a>'+
                     '</div>'+
                     '<div class="logo">'+
-                    '<img src="/backstage/image/logo2.png" alt=""/>'+
+                    '<img src="/Intro/backstageshow/image/logo2.png" alt=""/>'+
                     '<div>'+
                     '<p>超能小黑管理中心 V2.0</p>'+
                     '<span><i>©</i>2017武汉黑狗科技有限公司</span>'+
@@ -81,7 +81,7 @@ var footer = new Vue({
 
 $(function(){
 
-    var img = $("<img id='wait_img' src='/backstage/image/wait.gif'>");
+    var img = $("<img id='wait_img' src='/Intro/backstageshow/image/wait.gif'>");
     $("body").append(img);
     if($(window).scrollTop()>80){
         $("#header-nav>div:first-child").addClass("active");
@@ -119,7 +119,7 @@ function Token(e){
         }
         if(e.error>=9000){
             localStorage.clear();
-            location.href="/backstage/html/login.html";
+            location.href="/Intro/backstageshow/html/login.html";
             tokenTT = true;
         }
         return false;

@@ -1102,7 +1102,7 @@ var body = new Vue({
                         alert(e.message);
                         if(e.error>=9000){
                             localStorage.clear();
-                            location.href="/backstage/html/login.html"
+                            location.href="/Intro/backstageshow/html/login.html"
                         }
                     }else{
                         body.taobao.untilnow = e.untilnow;
@@ -1134,7 +1134,7 @@ var body = new Vue({
                         alert(e.message);
                         if(e.error>=9000){
                             localStorage.clear();
-                            location.href="/backstage/html/login.html"
+                            location.href="/Intro/backstageshow/html/login.html"
                         }
                     }else{
                         body.weixin.untilnow = e.untilnow;
@@ -1166,7 +1166,7 @@ var body = new Vue({
                         alert(e.message);
                         if(e.error>=9000){
                             localStorage.clear();
-                            location.href="/backstage/html/login.html"
+                            location.href="/Intro/backstageshow/html/login.html"
                         }
                     }else{
                         body.app.untilnow = e.untilnow;
@@ -1198,7 +1198,7 @@ var body = new Vue({
                         alert(e.message);
                         if(e.error>=9000){
                             localStorage.clear();
-                            location.href="/backstage/html/login.html"
+                            location.href="/Intro/backstageshow/html/login.html"
                         }
                     }else{
                         body.offline.untilnow = e.untilnow;
@@ -1232,7 +1232,7 @@ var body = new Vue({
                         alert(e.message);
                         if(e.error>=9000){
                             localStorage.clear();
-                            location.href="/backstage/html/login.html"
+                            location.href="/Intro/backstageshow/html/login.html"
                         }
                     }else{
                         body.taobao.time = e.time;

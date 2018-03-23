@@ -1058,7 +1058,7 @@ var remarks_pop =new Vue({
                             $("#remarks-pop").removeClass("active");
                             if(e.error>=9000){
                                 localStorage.clear();
-                                location.href="/backstage/html/login.html"
+                                location.href="/Intro/backstageshow/html/login.html"
                             }
                         }else{
                             alert("备注成功！");

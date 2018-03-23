@@ -708,7 +708,7 @@ $("#submit").on("click",function(){
                     if(normalgoods.length>0){
                         localStorage.goods_deliver = 1;
                     }
-                    window.open("/backstage/order/order-detail.html?id="+e.id);
+                    window.open("/Intro/backstageshow/order/order-detail.html?id="+e.id);
                 }
             }
         })

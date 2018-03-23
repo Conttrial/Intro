@@ -14,7 +14,7 @@ Vue.component('search-nav',{
                 '</div>'+
                 '<div id="search-status" data-status="100">'+
                 '<p>全部状态</p>'+
-                '<img src="/backstage/image/pull-down.png" alt=""/>'+
+                '<img src="/Intro/backstageshow/image/pull-down.png" alt=""/>'+
                 '<div class="menu">'+
                 '<li data-status="1"><div><p>已付款</p></div></li>'+
                 '<li data-status="2"><div><p>未付款</p></div></li>'+
@@ -66,7 +66,7 @@ Vue.component('search-nav',{
                 key = true;
             }
             if(key){
-                location.href="/backstage/html/order/order.html?wd="+encodeURI(keyword)+"&st="+starttime+"&et="+endtime+"&status="+status
+                location.href="/Intro/backstageshow/html/order/order.html?wd="+encodeURI(keyword)+"&st="+starttime+"&et="+endtime+"&status="+status
             }
         },
 
