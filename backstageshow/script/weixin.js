@@ -243,7 +243,7 @@ var body = new Vue({
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -650,7 +650,7 @@ var edit = new Vue({
             form.append('time',this.time);
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:form,
                 dataType:"json",
                 processData:false,
@@ -744,7 +744,7 @@ var cover2 = new Vue({
             }
             $.ajax({
                 url:url,
-                type:"POST",
+                // type:"POST",
                 data:data,
                 //dataType:'json',
                 success:function(e){

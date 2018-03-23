@@ -97,7 +97,7 @@ var search = new Vue({
                 }
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         keyword:this.keyword,
                         starttime:starttime,
@@ -743,7 +743,7 @@ var main = new Vue({
                 }
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         keyword:search.keyword,
                         starttime:starttime,
@@ -1044,7 +1044,7 @@ var remarks_pop =new Vue({
             if(this.remark_content.length>0){
                 $.ajax({
                     url:"",
-                    type:"post",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -1098,7 +1098,7 @@ var price_pop = new Vue({
                 if(this.price>0){
                     $.ajax({
                         url:"",
-                        type:"POST",
+                        // type:"POST",
                         data:{
                             userid:localStorage.userid,
                             token:localStorage.token,
@@ -1119,7 +1119,7 @@ var price_pop = new Vue({
             }else if(this.type==2){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -1155,7 +1155,7 @@ var cover = new Vue({
             if(this.type==1){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -1181,7 +1181,7 @@ var cover = new Vue({
             }else{
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,

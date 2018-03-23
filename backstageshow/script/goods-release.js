@@ -42,7 +42,7 @@ $(function(){
     var key =0;
     $.ajax({                        //获取普通商品
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{},
         //dataType:"json",
         success:function(e){
@@ -274,7 +274,7 @@ $(function(){
         }
         $.ajax({
             url:url,
-            type:"POST",
+            // type:"POST",
             data:{
                 userid:localStorage.userid,
                 token:localStorage.token,
@@ -912,7 +912,7 @@ var main_right = new Vue({
             if(name){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -952,7 +952,7 @@ var main_right = new Vue({
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -981,7 +981,7 @@ var main_right = new Vue({
     mounted(){
         $.ajax({                    //获取规格列表
             url:"",
-            type:"POST",
+            // type:"POST",
             data:{
                 userid:localStorage.userid,
                 token:localStorage.token
@@ -1031,7 +1031,7 @@ var main_right = new Vue({
         })
         $.ajax({
             url:'',
-            type:"POST",
+            // type:"POST",
             data:{
                 userid:localStorage.userid,
                 token:localStorage.token
@@ -1193,7 +1193,7 @@ var cover = new Vue({
         Confirm:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data: {
                     userid: localStorage.userid,
                     token: localStorage.token,
@@ -1293,7 +1293,7 @@ $("#submit").on("click",function(){
         form.append("release",release);
         $.ajax({
             url:"",
-            type:"POST",
+            // type:"POST",
             data:form,
             //dataType:"json",
             processData:false,
@@ -1383,7 +1383,7 @@ $("#submit").on("click",function(){
 
         $.ajax({
             url:"",
-            type:"POST",
+            // type:"POST",
             data:form,
             dataType:"json",
             processData:false,
@@ -1472,7 +1472,7 @@ $("#submit").on("click",function(){
         form.append("release",release);
         $.ajax({
             url:"",
-            type:"POST",
+            // type:"POST",
             data:form,
             dataType:"json",
             processData:false,

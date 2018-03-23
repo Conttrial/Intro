@@ -28,7 +28,7 @@ $("#login").on("click",function(){
         if(username && password){
             $.ajax({
                 url:"http://192.168.3.164:5011/validate/orderlogin",
-                type:"POST",
+                // type:"POST",
                 data:{
                     username:username,
                     password:password,

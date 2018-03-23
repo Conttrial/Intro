@@ -733,7 +733,7 @@ var body = new Vue({
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -782,7 +782,7 @@ var body = new Vue({
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -820,7 +820,7 @@ var body = new Vue({
         GetServiceData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -850,7 +850,7 @@ var body = new Vue({
         GetGoodsData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -880,7 +880,7 @@ var body = new Vue({
         GetTaoBaoData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -960,7 +960,7 @@ var body = new Vue({
         GetWeiXinData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -1001,7 +1001,7 @@ var body = new Vue({
         GetAppData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -1042,7 +1042,7 @@ var body = new Vue({
         GetOffLineData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -1083,7 +1083,7 @@ var body = new Vue({
         GetTaoBaoWeekData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -1115,7 +1115,7 @@ var body = new Vue({
         GetWeiXinWeekData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -1147,7 +1147,7 @@ var body = new Vue({
         GetAppWeekData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -1179,7 +1179,7 @@ var body = new Vue({
         GetOffLineWeekData:function(){
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -1217,7 +1217,7 @@ var body = new Vue({
             offlineChart = echarts.init(document.getElementById("offlinechart"));
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token

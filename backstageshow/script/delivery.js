@@ -1272,7 +1272,7 @@ var remarks_pop =new Vue({
             if(this.remark_content.length>0){
                 $.ajax({
                     url:"",
-                    type:"post",
+                    // type:"POST",
                     beforeSend:function(){
                         $("#wait_img").addClass("active");
                     },
@@ -1326,7 +1326,7 @@ var cover = new Vue({
             {   //挂起 取消挂起
                  $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     beforeSend:function(){
                         $("#wait_img").addClass("active");
                     },
@@ -1360,7 +1360,7 @@ var cover = new Vue({
 
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -1392,7 +1392,7 @@ var cover = new Vue({
             }else if(this.type==4){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -1449,7 +1449,7 @@ var manual = new Vue({
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 beforeSend:function(){
                     $("#wait_img").addClass("active");
                 },

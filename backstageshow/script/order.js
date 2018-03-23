@@ -260,14 +260,14 @@ var main =  new Vue({
             if(key){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     beforeSend:function(){
                         $("#wait_img").addClass("active");
                     },
                     complete:function(){
                         $("#wait_img").removeClass("active");
                     },
-                    timeout:10000,
+                    timeout:100,
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -724,7 +724,7 @@ var remarks_pop =new Vue({
                 }
                 $.ajax({
                     url:"http://192.168.3.164:5011/order/orderremark",
-                    type:"post",
+                    // type:"POST",
                     beforeSend:function(){
                         $("#wait_img").addClass("active");
                     },

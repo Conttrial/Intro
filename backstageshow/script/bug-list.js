@@ -5,7 +5,7 @@
 $(function(){
     $.ajax({                                      //===========================获取该用户提交过的bug列表
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:"??",     //用户id
             token:""         //token

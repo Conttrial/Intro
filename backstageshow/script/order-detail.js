@@ -18,7 +18,7 @@ var useraddresslist=[];
 function GetOrderDetail(id){
     $.ajax({
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
@@ -55,7 +55,7 @@ function GetOrderDetail(id){
 function GetRemark(id){
     $.ajax({
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
@@ -74,7 +74,7 @@ function GetRemark(id){
 function GetOpe(id){
     $.ajax({
     url:"",
-    type:"POST",
+    // type:"POST",
     data:{
         userid:localStorage.userid,
         token:localStorage.token,
@@ -93,7 +93,7 @@ function GetOpe(id){
 function GetGoodsWeek(id){
     $.ajax({
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
@@ -388,7 +388,7 @@ function GetPlanList(id,callback){
     $.ajax({
         //url:"http://192.168.3.100:5011/order/orderplanlist",
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
@@ -742,7 +742,7 @@ function GetPlanList(id,callback){
 function GetUserAddressList(callback){
     $.ajax({            //获取用户地址
         url:"",
-        type:"post",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
@@ -787,7 +787,7 @@ function GetUserAddressList(callback){
 function GetGoods(){
     $.ajax({
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token
@@ -919,7 +919,7 @@ function AddressEditAdd(_this){
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:data,
                 //dataType:"json",
                 success:function(e){
@@ -1913,7 +1913,7 @@ var order_list_wrap = new Vue({
                             function GetDetailPlan(){
                                 $.ajax({
                                     url:"",
-                                    type:"POST",
+                                    // type:"POST",
                                     data:{
                                         userid:localStorage.userid,
                                         token:localStorage.token,
@@ -2704,7 +2704,7 @@ var service = new Vue({
             }else{
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:data,
                     //dataType:"json",
                     success:function(e){
@@ -2740,7 +2740,7 @@ var service = new Vue({
             }else{
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:data,
                     //dataType:"json",
                     success:function(e){
@@ -2777,7 +2777,7 @@ var service = new Vue({
             }else{
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:data,
                     //dataType:"json",
                     success:function(e){
@@ -3093,7 +3093,7 @@ var merge = new Vue({
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -3354,7 +3354,7 @@ var split = new Vue({
             }
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -3963,7 +3963,7 @@ var edit = new Vue({
                 console.log(list);
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -4031,7 +4031,7 @@ var edit = new Vue({
             console.log(list);
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -4252,7 +4252,7 @@ var deal = new Vue({
             var plantime = $(this.$el).find(".select-time>p").html();
             $.ajax({
                 url:"",
-                type:"POST",
+                // type:"POST",
                 data:{
                     userid:localStorage.userid,
                     token:localStorage.token,
@@ -4302,7 +4302,7 @@ var remarks_pop =new Vue({
         SubmitRemark:function(){
             $.ajax({
                 url:"",
-                type:"post",
+                // type:"POST",
                 data:{
                     content:this.remark_content,
                     weeks:this.select_week,
@@ -4327,7 +4327,7 @@ var cover = new Vue({
             if(this.status == 4){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -4348,7 +4348,7 @@ var cover = new Vue({
             }else if(this.status ==6){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -4369,7 +4369,7 @@ var cover = new Vue({
             }else if(this.status== 2){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -4390,7 +4390,7 @@ var cover = new Vue({
             }else if(this.status == 'pause'){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -4411,7 +4411,7 @@ var cover = new Vue({
             }else if (this.status=='continue'){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -4479,7 +4479,7 @@ var time_change = new Vue({
                 console.log($("#time-change .select-time p").html())
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,

@@ -429,7 +429,7 @@ var main_right = new Vue({
 $(function(){
         $.ajax({                        //获取计划商品
             url:"",
-            type:"POST",
+            // type:"POST",
             data:{},
             //dataType:"json",
             success:function(){
@@ -680,7 +680,7 @@ $("#submit").on("click",function(){
     if(platform>=0 && ordernum && customerid &&customername &&phone &&price &&buy_time &&start_time &&spacing &&addressdetail){
         $.ajax({
             url:"",
-            type:"POST",
+            // type:"POST",
             data:{
                 platform:platform,
                 ordernum:ordernum,

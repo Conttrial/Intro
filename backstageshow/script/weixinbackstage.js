@@ -4,7 +4,7 @@ $(function(){
 function GetCodeImg(){
     $.ajax({
         url:"",
-        type:"post",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             url:""

@@ -438,7 +438,7 @@ var main =  new Vue({
             if(endtime>=starttime && endtime){
                 $.ajax({             //=====================================================ajax====
                     url:'',
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:"",          //用户ID
                         token:"",           //token
@@ -754,7 +754,7 @@ main.GetData();
 $(function(){
     $.ajax({                                      //=================================ajax================获取已提交过BUG的人员列表
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:"??",                         //userid
             token:""                             //token
@@ -808,7 +808,7 @@ $("#remarks-pop #remarks-submit").on("click",function(){
     if($("#remarks-text").val() !=""){
         $.ajax({                                 //======================ajax==================================提交回复
             url:"",
-            type:"POST",
+            // type:"POST",
             data:{
                 id:$("#remarks-pop").attr("target"),        //bugid
                 text:$("#remarks-text").val()               //回复内容
@@ -931,7 +931,7 @@ $("#search-btn").on("click",function(){
     if(endtime >starttime){
         $.ajax({                                            //==============================ajax===========搜索
             url:"",
-            type:"POST",
+            // type:"POST",
             data:{
                 userid:"?",            //userid
                 token:"",              //token

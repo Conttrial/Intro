@@ -503,7 +503,7 @@ $("#submit").on("click",function(){
     if(description !=""){
         $.ajax({                                               //=============ajax============提交bug
             url:"",
-            type:"POST",
+            // type:"POST",
             data:{
                 from:from,             //bug来源
                 module:module,         //模块

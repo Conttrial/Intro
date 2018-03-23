@@ -423,7 +423,7 @@ var cover = new Vue({
             if(this.type==1){
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -447,7 +447,7 @@ var cover = new Vue({
             }else{
                 $.ajax({
                     url:"",
-                    type:"POST",
+                    // type:"POST",
                     data:{
                         userid:localStorage.userid,
                         token:localStorage.token,
@@ -495,7 +495,7 @@ function GetPlan(starttime,endtime,keyword,status){
 
     $.ajax({
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
@@ -661,7 +661,7 @@ function GetAddpack(starttime,endtime,keyword,status){
 
     $.ajax({
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
@@ -892,7 +892,7 @@ function GetGoods(starttime,endtime,keyword,status){
 
     $.ajax({
         url:"",
-        type:"POST",
+        // type:"POST",
         data:{
             userid:localStorage.userid,
             token:localStorage.token,
